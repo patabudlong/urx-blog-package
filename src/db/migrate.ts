@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import bcrypt from 'bcryptjs';
 import { execute, getDb, queryOne } from './connection.js';
 import { DEFAULT_ADMIN_EMAIL, DEFAULT_ADMIN_PASSWORD } from '../types.js';
+import { seedDefaultCategories, syncCategoriesFromPosts } from '../categories/repository.js';
 
 const packageRoot = join(dirname(fileURLToPath(import.meta.url)), '../..');
 
@@ -52,6 +53,9 @@ export async function migrate(): Promise<void> {
 }
 
 export async function seed(): Promise<void> {
+	await seedDefaultCategories();
+	await syncCategoriesFromPosts();
+
 	const existingAdmin = await queryOne<{ id: number }>(
 		'SELECT id FROM urx_blog_users WHERE email = :email LIMIT 1',
 		{ email: DEFAULT_ADMIN_EMAIL }

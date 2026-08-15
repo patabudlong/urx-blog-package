@@ -5,6 +5,7 @@
 	import { cmsNavItems, cmsPaths } from '$lib/urx-cms';
 	import { readCmsTheme, writeCmsTheme, type CmsTheme } from '$lib/cms-theme';
 	import CmsThemeToggle from '$lib/components/ui/CmsThemeToggle.svelte';
+	import CmsAlerts from '$lib/components/ui/CmsAlerts.svelte';
 
 	let { children, data } = $props();
 
@@ -57,6 +58,7 @@
 	{/if}
 
 	<main class="cms-main cms-container">
+		<CmsAlerts />
 		{@render children()}
 	</main>
 </div>

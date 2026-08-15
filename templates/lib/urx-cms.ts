@@ -20,8 +20,11 @@ export function getCmsPaths(adminPath: string = urxCmsConfig.adminPath) {
 		login: `${adminPath}/login`,
 		logout: `${adminPath}/logout`,
 		posts: `${adminPath}/posts`,
+		categories: `${adminPath}/categories`,
 		newPost: `${adminPath}/posts/new`,
-		editPost: (id: number | string) => `${adminPath}/posts/${id}`
+		editPost: (id: number | string) => `${adminPath}/posts/${id}`,
+		apiCategories: `${adminPath}/api/categories`,
+		apiMedia: `${adminPath}/api/media`
 	} as const;
 }
 
@@ -36,7 +39,12 @@ export const cmsNavItems = [
 			path === cmsPaths.posts ||
 			(path.startsWith(`${cmsPaths.posts}/`) && path !== cmsPaths.newPost)
 	},
-	{ label: 'New Post', href: cmsPaths.newPost, match: (path: string) => path === cmsPaths.newPost }
+	{ label: 'New Post', href: cmsPaths.newPost, match: (path: string) => path === cmsPaths.newPost },
+	{
+		label: 'Categories',
+		href: cmsPaths.categories,
+		match: (path: string) => path === cmsPaths.categories
+	}
 ] as const;
 
 /** Normalize blog image URLs; empty values use the local placeholder. */
@@ -56,4 +64,9 @@ export function isBlogImagePlaceholder(
 	fallbackImage: string = BLOG_IMAGE_PLACEHOLDER
 ): boolean {
 	return resolveBlogImageUrl(src, fallbackImage) === fallbackImage;
+}
+
+/** Proxy Linode uploads through the CMS for private-bucket previews. */
+export function getCmsMediaPreviewUrl(src: string): string {
+	return `${cmsPaths.apiMedia}?url=${encodeURIComponent(src)}`;
 }

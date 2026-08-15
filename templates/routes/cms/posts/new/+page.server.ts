@@ -3,14 +3,16 @@ import {
 	createPost,
 	getSessionFromCookies,
 	isBlogStorageConfigured,
+	listCategories,
 	resolveFeaturedImageFromForm,
 	slugify
 } from '@urixoft/urx-cms-package';
 import { cmsPaths } from '$lib/urx-cms';
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = () => ({
-	storageConfigured: isBlogStorageConfigured()
+export const load: PageServerLoad = async () => ({
+	storageConfigured: isBlogStorageConfigured(),
+	categories: await listCategories()
 });
 
 export const actions: Actions = {
@@ -22,12 +24,17 @@ export const actions: Actions = {
 		const title = String(form.get('title') ?? '').trim();
 		const excerpt = String(form.get('excerpt') ?? '').trim();
 		const content = String(form.get('content') ?? '').trim();
-		const category = String(form.get('category') ?? 'News').trim();
+		const category = String(form.get('category') ?? '').trim();
 		const status = String(form.get('status') ?? 'draft') as 'draft' | 'published';
-		const slug = slugify(String(form.get('slug') ?? title));
+		const slugInput = String(form.get('slug') ?? '').trim();
+		const slug = slugify(slugInput || title);
 
 		if (!title || !content) {
 			return fail(400, { error: 'Title and content are required.' });
+		}
+
+		if (!category) {
+			return fail(400, { error: 'Category is required.' });
 		}
 
 		let featuredImage: string | undefined;

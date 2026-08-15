@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { extname } from 'node:path';
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getLinodeStorageConfig, getLinodeUploadPrefix } from '../config/runtime.js';
 
 const ALLOWED_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
@@ -71,8 +71,7 @@ export async function uploadBlogImage(upload: BlogImageUpload): Promise<string> 
 			Bucket: config.bucket,
 			Key: key,
 			Body: upload.buffer,
-			ContentType: upload.contentType,
-			ACL: 'public-read'
+			ContentType: upload.contentType
 		})
 	);
 
@@ -97,4 +96,56 @@ export async function resolveFeaturedImageFromForm(
 	}
 
 	return urlField || fallbackUrl || undefined;
+}
+
+export function resolveManagedImageKey(publicUrl: string): string | null {
+	const config = getLinodeStorageConfig();
+	if (!config) return null;
+
+	const base = config.publicBase.replace(/\/$/, '');
+
+	try {
+		const parsed = new URL(publicUrl);
+		const baseUrl = new URL(base);
+
+		if (parsed.origin !== baseUrl.origin) {
+			return null;
+		}
+
+		const key = decodeURIComponent(parsed.pathname.replace(/^\//, ''));
+		return key || null;
+	} catch {
+		return null;
+	}
+}
+
+export async function fetchManagedBlogImage(
+	publicUrl: string
+): Promise<{ body: Uint8Array; contentType: string }> {
+	const config = getLinodeStorageConfig();
+	if (!config) {
+		throw new Error('Linode Object Storage is not configured.');
+	}
+
+	const key = resolveManagedImageKey(publicUrl);
+	if (!key) {
+		throw new Error('Invalid image URL.');
+	}
+
+	const client = getClient();
+	const response = await client.send(
+		new GetObjectCommand({
+			Bucket: config.bucket,
+			Key: key
+		})
+	);
+
+	if (!response.Body) {
+		throw new Error('Image not found.');
+	}
+
+	return {
+		body: await response.Body.transformToByteArray(),
+		contentType: response.ContentType ?? 'application/octet-stream'
+	};
 }

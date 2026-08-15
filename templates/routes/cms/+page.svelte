@@ -5,8 +5,13 @@
 </script>
 
 <div>
-	<h1 class="cms-heading">Dashboard</h1>
-	<p class="cms-muted mt-2">Manage your Latest News posts from here.</p>
+	<div class="flex items-start justify-between gap-4">
+		<div>
+			<h1 class="cms-heading">Dashboard</h1>
+			<p class="cms-muted mt-2">Manage your Latest News posts from here.</p>
+		</div>
+		<a href={cmsPaths.newPost} class="cms-btn-primary shrink-0">Create New Post</a>
+	</div>
 
 	<div class="mt-8 grid gap-4 sm:grid-cols-3">
 		<div class="cms-card p-6">
@@ -25,9 +30,5 @@
 				{data.posts.filter((p) => p.status === 'draft').length}
 			</p>
 		</div>
-	</div>
-
-	<div class="mt-8">
-		<a href={cmsPaths.newPost} class="cms-btn-primary">Create New Post</a>
 	</div>
 </div>

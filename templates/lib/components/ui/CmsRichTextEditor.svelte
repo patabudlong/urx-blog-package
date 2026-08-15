@@ -3,6 +3,7 @@
 	import { Editor } from '@tiptap/core';
 	import Link from '@tiptap/extension-link';
 	import StarterKit from '@tiptap/starter-kit';
+	import CmsFieldLabel from './CmsFieldLabel.svelte';
 
 	type Props = {
 		name?: string;
@@ -109,7 +110,7 @@
 </script>
 
 <div class="sm:col-span-2">
-	<span class="cms-label">{label}</span>
+	<CmsFieldLabel required>{label}</CmsFieldLabel>
 	<div class="cms-rich-text-editor__frame">
 		<div class="cms-rich-text-editor__toolbar" role="toolbar" aria-label="Formatting">
 			<button

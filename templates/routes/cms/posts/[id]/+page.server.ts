@@ -5,6 +5,7 @@ import {
 	getPostById,
 	getSessionFromCookies,
 	isBlogStorageConfigured,
+	listCategories,
 	resolveFeaturedImageFromForm,
 	slugify,
 	updatePost
@@ -15,7 +16,12 @@ import type { Actions, PageServerLoad } from './$types';
 export const load: PageServerLoad = async ({ params }) => {
 	const post = await getPostById(Number(params.id));
 	if (!post) error(404, 'Post not found');
-	return { post, storageConfigured: isBlogStorageConfigured(), blogBasePath: getConfiguredBlogBasePath() };
+	return {
+		post,
+		categories: await listCategories(),
+		storageConfigured: isBlogStorageConfigured(),
+		blogBasePath: getConfiguredBlogBasePath()
+	};
 };
 
 export const actions: Actions = {

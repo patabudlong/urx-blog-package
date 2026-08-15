@@ -19,6 +19,10 @@
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js"
 		},
+		"./categories": {
+			"types": "./dist/categories/repository.d.ts",
+			"import": "./dist/categories/repository.js"
+		},
 		"./sveltekit": {
 			"types": "./dist/sveltekit/index.d.ts",
 			"import": "./dist/sveltekit/index.js"

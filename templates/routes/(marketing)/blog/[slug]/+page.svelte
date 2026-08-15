@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Container from '$lib/components/layout/Container.svelte';
 	import BlogFeaturedImage from '$lib/components/ui/BlogFeaturedImage.svelte';
+	import BlogShareBar from '$lib/components/ui/BlogShareBar.svelte';
 
 	let { data } = $props();
 	const post = $derived(data.post);
@@ -9,6 +10,24 @@
 <svelte:head>
 	<title>{data.seo.title}</title>
 	<meta name="description" content={data.seo.description} />
+	<link rel="canonical" href={data.seo.canonicalUrl} />
+	<meta property="og:type" content={data.seo.type} />
+	<meta property="og:title" content={data.seo.title} />
+	<meta property="og:description" content={data.seo.description} />
+	<meta property="og:url" content={data.seo.canonicalUrl} />
+	{#if data.seo.image}
+		<meta property="og:image" content={data.seo.image} />
+		<meta name="twitter:image" content={data.seo.image} />
+	{/if}
+	{#if data.seo.publishedTime}
+		<meta property="article:published_time" content={data.seo.publishedTime} />
+	{/if}
+	{#if data.seo.modifiedTime}
+		<meta property="article:modified_time" content={data.seo.modifiedTime} />
+	{/if}
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content={data.seo.title} />
+	<meta name="twitter:description" content={data.seo.description} />
 </svelte:head>
 
 <article class="bg-surface-muted py-20">
@@ -30,6 +49,8 @@
 
 			<h1 class="text-3xl font-bold sm:text-4xl">{post.title}</h1>
 
+			<BlogShareBar share={data.share} class="mt-6" />
+
 			<BlogFeaturedImage
 				src={post.featuredImage}
 				alt={post.title}
@@ -39,6 +60,8 @@
 			<div class="prose prose-neutral mt-8 max-w-none">
 				{@html post.content}
 			</div>
+
+			<BlogShareBar share={data.share} heading="Share with your network" class="mt-10" />
 
 			<a
 				href={data.blogBasePath}

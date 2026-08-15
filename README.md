@@ -91,6 +91,30 @@ import {
 } from '@urixoft/urx-cms-package';
 ```
 
+### Shareable posts
+
+Install copies `BlogShareBar.svelte` onto post detail pages. Each post gets:
+
+- **Share bar** — copy link, Facebook, LinkedIn, X, WhatsApp, and email
+- **Open Graph / Twitter meta** — canonical URL, title, description, featured image, and article timestamps
+
+`createBlogPostLoad()` returns `share` and enriched `seo` for use in templates:
+
+```ts
+import { createBlogPostLoad } from '@urixoft/urx-cms-package/sveltekit';
+import { site } from '$lib/config/site';
+
+export const load = createBlogPostLoad({ siteOrigin: site.url });
+```
+
+Build custom share links programmatically:
+
+```ts
+import { buildBlogShareData, buildBlogPostUrl } from '@urixoft/urx-cms-package';
+```
+
+For private Linode buckets, pass `resolveShareImageUrl` so social previews use your public image proxy (see project `src/lib/urx-cms.ts`).
+
 ### Programmatic upload
 
 ```ts

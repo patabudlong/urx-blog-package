@@ -67,6 +67,12 @@ export async function install(projectRoot = process.cwd()): Promise<void> {
 	const libCopies = await copyDir(join(templatesDir, 'lib'), join(srcDir, 'lib'), []);
 	copiedFiles.push(...libCopies);
 
+	const srcTemplateDir = join(templatesDir, 'src');
+	if (await pathExists(srcTemplateDir)) {
+		const srcCopies = await copyDir(srcTemplateDir, srcDir, []);
+		copiedFiles.push(...srcCopies);
+	}
+
 	const legacyBlogPageLoad = join(srcDir, 'routes', '(marketing)', 'blog', '+page.ts');
 	if (await pathExists(legacyBlogPageLoad)) {
 		await unlink(legacyBlogPageLoad);

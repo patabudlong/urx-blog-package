@@ -1,12 +1,13 @@
 import { mkdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
+import { getConfiguredDatabasePath } from '../config/runtime.js';
 import type { UrxBlogConfig } from '../types.js';
 
 let db: DatabaseSync | null = null;
 
 export function getDatabasePath(config: UrxBlogConfig = {}, projectRoot = process.cwd()): string {
-	const fromConfig = config.databasePath ?? process.env.URX_BLOG_DB_PATH ?? 'data/urx-blog.db';
+	const fromConfig = config.databasePath ?? getConfiguredDatabasePath() ?? 'data/urx-blog.db';
 	return resolve(projectRoot, fromConfig);
 }
 

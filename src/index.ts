@@ -1,4 +1,5 @@
 export * from './types.js';
+export { configureUrxBlog } from './config/runtime.js';
 export { getDatabasePath, pingDatabase, closeDb } from './db/connection.js';
 export { migrate, seed, setupDatabase } from './db/migrate.js';
 export { verifyUser, findUserByEmail, findUserById } from './auth/users.js';

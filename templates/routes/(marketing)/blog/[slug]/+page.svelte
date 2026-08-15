@@ -1,0 +1,50 @@
+<script lang="ts">
+	import Container from '$lib/components/layout/Container.svelte';
+	import LazyImage from '$lib/components/ui/LazyImage.svelte';
+
+	let { data } = $props();
+	const post = $derived(data.post);
+</script>
+
+<svelte:head>
+	<title>{data.seo.title}</title>
+	<meta name="description" content={data.seo.description} />
+</svelte:head>
+
+<article class="bg-surface-muted py-20">
+	<Container>
+		<div class="mx-auto max-w-3xl">
+			<div class="mb-6 flex items-center gap-3 text-sm font-medium text-brand">
+				<span>{post.category}</span>
+				{#if post.publishedAt}
+					<span class="text-foreground-muted">·</span>
+					<time class="text-foreground-muted" datetime={post.publishedAt.toISOString()}>
+						{new Intl.DateTimeFormat('en-US', {
+							month: 'long',
+							day: 'numeric',
+							year: 'numeric'
+						}).format(post.publishedAt)}
+					</time>
+				{/if}
+			</div>
+
+			<h1 class="text-3xl font-bold sm:text-4xl">{post.title}</h1>
+
+			{#if post.featuredImage}
+				<LazyImage
+					src={post.featuredImage}
+					alt={post.title}
+					class="mt-8 w-full rounded-2xl object-cover"
+				/>
+			{/if}
+
+			<div class="prose prose-neutral mt-8 max-w-none">
+				{@html post.content}
+			</div>
+
+			<a href="/blog" class="mt-10 inline-block text-sm font-medium text-brand hover:underline">
+				← Back to Blog
+			</a>
+		</div>
+	</Container>
+</article>

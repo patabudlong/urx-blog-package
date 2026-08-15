@@ -1,0 +1,58 @@
+{
+	"name": "@urixoft/urx-blog-package",
+	"version": "0.2.0",
+	"description": "Lightweight SQLite-backed blog package for Urixoft SvelteKit projects (node:sqlite, no Docker)",
+	"type": "module",
+	"license": "UNLICENSED",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/patabudlong/urx-blog-package.git"
+	},
+	"engines": {
+		"node": ">=22.13.0"
+	},
+	"bin": {
+		"urx-blog": "./bin/urx-blog.js"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		},
+		"./sveltekit": {
+			"types": "./dist/sveltekit/index.d.ts",
+			"import": "./dist/sveltekit/index.js"
+		}
+	},
+	"files": [
+		"bin",
+		"sql",
+		"templates",
+		"src"
+	],
+	"scripts": {
+		"build": "tsc",
+		"prepare": "tsc",
+		"check": "tsc --noEmit"
+	},
+	"peerDependencies": {
+		"@sveltejs/kit": "^2.0.0",
+		"svelte": "^5.0.0"
+	},
+	"dependencies": {
+		"bcryptjs": "^3.0.2"
+	},
+	"devDependencies": {
+		"@sveltejs/kit": "^2.63.0",
+		"@types/bcryptjs": "^2.4.6",
+		"@types/node": "^24",
+		"svelte": "^5.56.1",
+		"typescript": "^6.0.3"
+	},
+	"keywords": [
+		"urixoft",
+		"sveltekit",
+		"blog",
+		"sqlite"
+	]
+}

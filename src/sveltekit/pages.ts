@@ -11,6 +11,10 @@ import type { BlogIndexPath } from '../adapters/blog-nav.js';
 export type CreateBlogPostLoadOptions = {
 	/** Site origin for canonical URLs and share links — defaults to the request origin. */
 	siteOrigin?: string;
+	/** Site name for og:site_name (Facebook / Open Graph). */
+	siteName?: string;
+	/** Default OG image path or URL when a post has no featured image. */
+	defaultShareImage?: string;
 	fallbackImage?: string;
 	resolveShareImageUrl?: (
 		featuredImage: string | null,
@@ -67,6 +71,8 @@ export function createBlogPostLoad(options: CreateBlogPostLoadOptions = {}) {
 			siteOrigin,
 			basePath: blogBasePath,
 			fallbackImage: options.fallbackImage,
+			defaultShareImage: options.defaultShareImage,
+			siteName: options.siteName,
 			resolveShareImageUrl: options.resolveShareImageUrl
 		});
 

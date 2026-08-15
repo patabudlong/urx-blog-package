@@ -5,6 +5,8 @@
 
 	let { data } = $props();
 	const post = $derived(data.post);
+	const ogImage = $derived(data.seo.image);
+	const ogImageIsSecure = $derived(ogImage?.startsWith('https://'));
 </script>
 
 <svelte:head>
@@ -15,9 +17,15 @@
 	<meta property="og:title" content={data.seo.title} />
 	<meta property="og:description" content={data.seo.description} />
 	<meta property="og:url" content={data.seo.canonicalUrl} />
-	{#if data.seo.image}
-		<meta property="og:image" content={data.seo.image} />
-		<meta name="twitter:image" content={data.seo.image} />
+	{#if data.seo.siteName}
+		<meta property="og:site_name" content={data.seo.siteName} />
+	{/if}
+	{#if ogImage}
+		<meta property="og:image" content={ogImage} />
+		{#if ogImageIsSecure}
+			<meta property="og:image:secure_url" content={ogImage} />
+		{/if}
+		<meta property="og:image:alt" content={data.seo.imageAlt ?? data.seo.title} />
 	{/if}
 	{#if data.seo.publishedTime}
 		<meta property="article:published_time" content={data.seo.publishedTime} />
@@ -28,6 +36,9 @@
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content={data.seo.title} />
 	<meta name="twitter:description" content={data.seo.description} />
+	{#if ogImage}
+		<meta name="twitter:image" content={ogImage} />
+	{/if}
 </svelte:head>
 
 <article class="bg-surface-muted py-20">

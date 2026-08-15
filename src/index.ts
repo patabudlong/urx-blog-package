@@ -47,6 +47,7 @@ export {
 export {
 	absoluteUrl,
 	buildBlogPostUrl,
+	buildFacebookShareUrl,
 	buildBlogShareLinks,
 	buildBlogShareData,
 	buildBlogPostShareContext,

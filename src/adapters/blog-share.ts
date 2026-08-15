@@ -24,6 +24,8 @@ export type BlogPostSeo = {
 	canonicalUrl: string;
 	type: 'article';
 	image?: string;
+	imageAlt?: string;
+	siteName?: string;
 	publishedTime?: string;
 	modifiedTime?: string;
 };
@@ -45,6 +47,11 @@ export function buildBlogPostUrl(siteOrigin: string, basePath: BlogIndexPath, sl
 	return absoluteUrl(siteOrigin, `${base}/${slug}`);
 }
 
+/** Facebook share dialog URL (scrapes Open Graph tags from the shared page). */
+export function buildFacebookShareUrl(url: string): string {
+	return `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+}
+
 export function buildBlogShareLinks(input: {
 	url: string;
 	title: string;
@@ -59,7 +66,7 @@ export function buildBlogShareLinks(input: {
 		{
 			platform: 'facebook',
 			label: 'Facebook',
-			href: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`
+			href: buildFacebookShareUrl(input.url)
 		},
 		{
 			platform: 'linkedin',
@@ -123,6 +130,9 @@ export function buildBlogPostShareContext(
 		siteOrigin: string;
 		basePath: BlogIndexPath;
 		fallbackImage?: string;
+		/** Site-wide OG image used when the post has no featured image (Facebook requires og:image). */
+		defaultShareImage?: string;
+		siteName?: string;
 		resolveShareImageUrl?: (
 			featuredImage: string | null,
 			context: { siteOrigin: string; fallbackImage?: string }
@@ -132,10 +142,14 @@ export function buildBlogPostShareContext(
 	const canonicalUrl = buildBlogPostUrl(options.siteOrigin, options.basePath, post.slug);
 	const description = post.excerpt ?? post.title;
 	const resolveShareImageUrl = options.resolveShareImageUrl ?? defaultBlogShareImageUrl;
-	const image = resolveShareImageUrl(post.featuredImage, {
+	const featuredImage = resolveShareImageUrl(post.featuredImage, {
 		siteOrigin: options.siteOrigin,
 		fallbackImage: options.fallbackImage
 	});
+	const defaultImage = options.defaultShareImage
+		? absoluteUrl(options.siteOrigin, options.defaultShareImage)
+		: undefined;
+	const image = featuredImage ?? defaultImage;
 
 	const share = buildBlogShareData({
 		url: canonicalUrl,
@@ -150,6 +164,8 @@ export function buildBlogPostShareContext(
 		canonicalUrl,
 		type: 'article',
 		image,
+		imageAlt: post.title,
+		siteName: options.siteName,
 		publishedTime: post.publishedAt?.toISOString(),
 		modifiedTime: post.updatedAt.toISOString()
 	};

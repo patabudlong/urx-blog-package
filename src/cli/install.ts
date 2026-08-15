@@ -50,7 +50,15 @@ export async function install(projectRoot = process.cwd()): Promise<void> {
 	};
 
 	await upsertEnvFile(projectRoot, envEntries);
-	await upsertEnvExample(projectRoot, envEntries);
+	await upsertEnvExample(projectRoot, {
+		...envEntries,
+		LINODE_ENDPOINT: 'https://sg-sin-1.linodeobjects.com',
+		LINODE_BUCKET: 'your-bucket',
+		LINODE_ACCESS_KEY: 'your-access-key',
+		LINODE_SECRET_KEY: 'your-secret-key',
+		LINODE_REGION: 'sg-sin-1',
+		LINODE_PUBLIC_BASE: 'https://your-bucket.sg-sin-1.linodeobjects.com'
+	});
 	await loadEnvFile(projectRoot);
 
 	await mkdir(join(projectRoot, 'data'), { recursive: true });

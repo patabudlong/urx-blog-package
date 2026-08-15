@@ -1,8 +1,16 @@
 import { fail, redirect } from '@sveltejs/kit';
-import { createPost, getSessionFromCookies, slugify } from '@urixoft/urx-blog-package';
+import {
+	createPost,
+	getSessionFromCookies,
+	isBlogStorageConfigured,
+	resolveFeaturedImageFromForm,
+	slugify
+} from '@urixoft/urx-blog-package';
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = () => ({});
+export const load: PageServerLoad = () => ({
+	storageConfigured: isBlogStorageConfigured()
+});
 
 export const actions: Actions = {
 	default: async ({ request, cookies }) => {
@@ -14,12 +22,20 @@ export const actions: Actions = {
 		const excerpt = String(form.get('excerpt') ?? '').trim();
 		const content = String(form.get('content') ?? '').trim();
 		const category = String(form.get('category') ?? 'News').trim();
-		const featuredImage = String(form.get('featuredImage') ?? '').trim();
 		const status = String(form.get('status') ?? 'draft') as 'draft' | 'published';
 		const slug = slugify(String(form.get('slug') ?? title));
 
 		if (!title || !content) {
 			return fail(400, { error: 'Title and content are required.' });
+		}
+
+		let featuredImage: string | undefined;
+		try {
+			featuredImage = await resolveFeaturedImageFromForm(form);
+		} catch (error) {
+			return fail(400, {
+				error: error instanceof Error ? error.message : 'Image upload failed.'
+			});
 		}
 
 		const id = await createPost({
@@ -28,7 +44,7 @@ export const actions: Actions = {
 			excerpt: excerpt || undefined,
 			content,
 			category,
-			featuredImage: featuredImage || undefined,
+			featuredImage,
 			status,
 			authorId: user.id
 		});

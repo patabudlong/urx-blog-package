@@ -5,10 +5,9 @@ Lightweight SQLite-backed blog for SvelteKit projects in the Urixoft ecosystem.
 ## Quick start
 
 ```bash
-pnpm add @urixoft/urx-blog-package
-pnpm blog:install          # copies routes, creates SQLite DB, seeds data
-pnpm blog:migrate          # re-run migrations / seed if needed
-pnpm blog:remove           # uninstall from this project
+pnpm add github:patabudlong/urx-blog-package#v0.3.0
+pnpm blog:install
+pnpm blog:migrate
 ```
 
 ## Database
@@ -19,17 +18,12 @@ pnpm blog:remove           # uninstall from this project
 | File | `data/urx-blog.db` (created automatically) |
 | Docker | **Not required** |
 
+## Image storage (Linode)
+
+Set `LINODE_*` variables in `.env` to enable featured image uploads in `/blog-admin`. See the package README for full details.
+
 ## Default admin
 
 - **URL:** `/blog-admin`
 - **Email:** `superadmin@urixoft.com`
 - **Password:** `Use8to32!`
-
-## What gets installed
-
-- Home page server load injects live posts into the **Latest News** `blog-grid` section
-- `/blog` — post index
-- `/blog/[slug]` — post detail
-- `/blog-admin` — admin dashboard, login, CRUD
-
-See `packages/urx-blog-package/README.md` for full API docs.

@@ -1,6 +1,6 @@
 {
 	"name": "@urixoft/urx-blog-package",
-	"version": "0.2.2",
+	"version": "0.3.0",
 	"description": "Lightweight SQLite-backed blog package for Urixoft SvelteKit projects (node:sqlite, no Docker)",
 	"type": "module",
 	"license": "UNLICENSED",
@@ -41,6 +41,7 @@
 		"svelte": "^5.0.0"
 	},
 	"dependencies": {
+		"@aws-sdk/client-s3": "^3.888.0",
 		"bcryptjs": "^3.0.2"
 	},
 	"devDependencies": {

@@ -5,7 +5,8 @@ import {
 	isBlogStorageConfigured,
 	resolveFeaturedImageFromForm,
 	slugify
-} from '@urixoft/urx-blog-package';
+} from '@urixoft/urx-cms-package';
+import { cmsPaths } from '$lib/urx-cms';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = () => ({
@@ -15,7 +16,7 @@ export const load: PageServerLoad = () => ({
 export const actions: Actions = {
 	default: async ({ request, cookies }) => {
 		const user = getSessionFromCookies(cookies);
-		if (!user) redirect(303, '/blog-admin/login');
+		if (!user) redirect(303, cmsPaths.login);
 
 		const form = await request.formData();
 		const title = String(form.get('title') ?? '').trim();
@@ -49,6 +50,6 @@ export const actions: Actions = {
 			authorId: user.id
 		});
 
-		redirect(303, `/blog-admin/posts/${id}`);
+		redirect(303, cmsPaths.editPost(id));
 	}
 };

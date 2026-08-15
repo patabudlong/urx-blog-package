@@ -5,6 +5,9 @@
 	import type { Pathname } from '$app/types';
 
 	let { data } = $props();
+	const pageTitle = $derived(
+		data.blogNavLabel === 'News' ? 'News & Insights' : 'Blog & Insights'
+	);
 </script>
 
 <svelte:head>
@@ -15,8 +18,8 @@
 <section class="bg-surface-muted py-20">
 	<Container>
 		<div class="mb-12">
-			<p class="mb-3 text-sm font-semibold tracking-wide text-brand uppercase">Blog</p>
-			<h1 class="text-3xl font-bold sm:text-4xl">Blog & Insights</h1>
+			<p class="mb-3 text-sm font-semibold tracking-wide text-brand uppercase">{data.blogNavLabel}</p>
+			<h1 class="text-3xl font-bold sm:text-4xl">{pageTitle}</h1>
 			<p class="mt-4 max-w-2xl text-foreground-muted">
 				News, best practices, and updates on port digitization and terminal operations.
 			</p>

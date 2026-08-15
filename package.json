@@ -1,18 +1,18 @@
 {
-	"name": "@urixoft/urx-blog-package",
-	"version": "0.3.2",
-	"description": "Lightweight SQLite-backed blog package for Urixoft SvelteKit projects (node:sqlite, no Docker)",
+	"name": "@urixoft/urx-cms-package",
+	"version": "0.4.0",
+	"description": "Lightweight SQLite-backed CMS package for Urixoft SvelteKit projects (node:sqlite, no Docker)",
 	"type": "module",
 	"license": "UNLICENSED",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/patabudlong/urx-blog-package.git"
+		"url": "https://github.com/patabudlong/urx-cms-package.git"
 	},
 	"engines": {
 		"node": ">=22.13.0"
 	},
 	"bin": {
-		"urx-blog": "./bin/urx-blog.js"
+		"urx-cms": "./bin/urx-cms.js"
 	},
 	"exports": {
 		".": {
@@ -54,7 +54,7 @@
 	"keywords": [
 		"urixoft",
 		"sveltekit",
-		"blog",
+		"cms",
 		"sqlite"
 	]
 }

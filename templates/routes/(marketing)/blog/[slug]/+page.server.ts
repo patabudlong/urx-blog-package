@@ -1,16 +1,3 @@
-import { error } from '@sveltejs/kit';
-import { getPostBySlug } from '@urixoft/urx-blog-package';
-import type { PageServerLoad } from './$types';
+import { createBlogPostLoad } from '@urixoft/urx-cms-package/sveltekit';
 
-export const load: PageServerLoad = async ({ params }) => {
-	const post = await getPostBySlug(params.slug);
-	if (!post) error(404, 'Post not found');
-
-	return {
-		seo: {
-			title: post.title,
-			description: post.excerpt ?? post.title
-		},
-		post
-	};
-};
+export const load = createBlogPostLoad();

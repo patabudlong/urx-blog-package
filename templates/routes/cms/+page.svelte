@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { cmsPaths } from '$lib/urx-cms';
+
 	let { data } = $props();
 </script>
 
@@ -27,7 +29,7 @@
 
 	<div class="mt-8">
 		<a
-			href="/blog-admin/posts/new"
+			href={cmsPaths.newPost}
 			class="inline-flex rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-500"
 		>
 			Create New Post

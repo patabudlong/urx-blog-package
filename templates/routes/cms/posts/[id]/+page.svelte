@@ -119,7 +119,7 @@
 				Save Changes
 			</button>
 			{#if post.status === 'published'}
-				<a href="/blog/{post.slug}" class="rounded-lg border border-slate-700 px-4 py-2 text-sm text-slate-300 hover:text-white">
+				<a href="{data.blogBasePath}/{post.slug}" class="rounded-lg border border-slate-700 px-4 py-2 text-sm text-slate-300 hover:text-white">
 					View Live
 				</a>
 			{/if}

@@ -34,7 +34,7 @@ async function loadEnvFile(projectRoot: string): Promise<void> {
 }
 
 export async function install(projectRoot = process.cwd()): Promise<void> {
-	console.log('\n📦 Urixoft Blog Package — install\n');
+	console.log('\n📦 Urixoft CMS Package — install\n');
 
 	const templatesDir = join(packageRoot, 'templates');
 	const srcDir = join(projectRoot, 'src');
@@ -45,8 +45,8 @@ export async function install(projectRoot = process.cwd()): Promise<void> {
 	}
 
 	const envEntries = {
-		URX_BLOG_DB_PATH: 'data/urx-blog.db',
-		URX_BLOG_SESSION_SECRET: createSessionSecret()
+		URX_CMS_DB_PATH: 'data/urixoft-local.db',
+		URX_CMS_SESSION_SECRET: createSessionSecret()
 	};
 
 	await upsertEnvFile(projectRoot, envEntries);
@@ -58,7 +58,8 @@ export async function install(projectRoot = process.cwd()): Promise<void> {
 		LINODE_SECRET_KEY: 'your-secret-key',
 		LINODE_REGION: 'sg-sin-1',
 		LINODE_PUBLIC_BASE: 'https://your-bucket.sg-sin-1.linodeobjects.com',
-		LINODE_UPLOAD_PREFIX: 'urx-blog'
+		LINODE_UPLOAD_PREFIX: 'urx-cms',
+		URX_CMS_NAV_LABEL: 'Blog'
 	});
 	await loadEnvFile(projectRoot);
 
@@ -106,9 +107,9 @@ export async function install(projectRoot = process.cwd()): Promise<void> {
 
 	await writeManifest(projectRoot, manifest);
 
-	console.log('\n✅ Urixoft Blog Package installed successfully!\n');
-	console.log('   Database:       data/urx-blog.db (SQLite, no Docker required)');
-	console.log('   Admin URL:      /blog-admin');
+	console.log('\n✅ Urixoft CMS Package installed successfully!\n');
+	console.log('   Database:       data/urixoft-local.db (SQLite, no Docker required)');
+	console.log('   Admin URL:      /cms');
 	console.log('   Admin email:    superadmin@urixoft.com');
 	console.log('   Admin password: passWord1234!');
 	console.log(`   Manifest:       ${MANIFEST_FILE}\n`);

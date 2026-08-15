@@ -1,6 +1,9 @@
 import { toBlogGridData } from '../adapters/blog-grid.js';
+import { applyBlogPathsToGridSection } from './nav.js';
+import { getConfiguredBlogBasePath } from '../config/runtime.js';
 import { listPublishedPosts, getPostBySlug } from '../posts/repository.js';
-import type { BlogGridData, BlogPost, UrxBlogConfig } from '../types.js';
+import type { BlogGridData, BlogPost, UrxCmsConfig } from '../types.js';
+import type { BlogIndexPath } from '../adapters/blog-nav.js';
 
 export type BlogLoaders = {
 	getLatestPosts: (limit?: number) => Promise<BlogPost[]>;
@@ -13,7 +16,7 @@ export type BlogLoaders = {
 	getPublishedPost: (slug: string) => Promise<BlogPost | null>;
 };
 
-export function createBlogLoaders(config: UrxBlogConfig = {}): BlogLoaders {
+export function createBlogLoaders(config: UrxCmsConfig = {}): BlogLoaders {
 	const fallbackImage = config.fallbackImage;
 
 	return {
@@ -45,10 +48,16 @@ export async function injectBlogGridIntoSections<T extends { type: string; posts
 		title?: string;
 		cta?: { label: string; href: string };
 		fallbackImage?: string;
+		basePath?: BlogIndexPath;
 	} = {}
 ): Promise<T[]> {
+	const basePath = options.basePath ?? getConfiguredBlogBasePath();
+
 	try {
-		const grid = await toBlogGridData(await listPublishedPosts(options.limit ?? 3), options);
+		const grid = await toBlogGridData(await listPublishedPosts(options.limit ?? 3), {
+			...options,
+			basePath
+		});
 
 		return sections.map((section) => {
 			if (section.type !== 'blog-grid') return section;
@@ -56,11 +65,18 @@ export async function injectBlogGridIntoSections<T extends { type: string; posts
 				...section,
 				eyebrow: options.eyebrow ?? (section as { eyebrow?: string }).eyebrow ?? grid.eyebrow,
 				title: options.title ?? (section as { title?: string }).title ?? grid.title,
+				cta: options.cta ?? (section as { cta?: { label: string; href: string } }).cta ?? grid.cta,
 				posts: grid.posts
 			};
 		});
-	} catch (error) {
-		console.warn('[urx-blog-package] Could not load blog posts, using static fallback.', error);
-		return sections;
+	} catch (loadError) {
+		console.warn('[urx-cms-package] Could not load blog posts, using static fallback.', loadError);
+		return sections.map((section) => {
+			if (section.type !== 'blog-grid') return section;
+			return applyBlogPathsToGridSection(
+				section as T & { type: 'blog-grid'; cta?: { label: string; href: string }; posts?: { href: string }[] },
+				basePath
+			) as T;
+		});
 	}
 }

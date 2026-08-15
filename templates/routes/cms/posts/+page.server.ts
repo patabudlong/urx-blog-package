@@ -1,4 +1,4 @@
-import { listAllPosts } from '@urixoft/urx-blog-package';
+import { listAllPosts } from '@urixoft/urx-cms-package';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {

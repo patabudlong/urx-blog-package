@@ -1,13 +1,13 @@
-import { injectBlogGridIntoSections } from '@urixoft/urx-blog-package/sveltekit';
+import { injectBlogGridIntoSections } from '@urixoft/urx-cms-package/sveltekit';
 import { homePage } from '$lib/content/home';
 import { loadPageContent } from '$lib/content/load-page';
-import { urxBlogConfig } from '$lib/urx-blog';
+import { urxCmsConfig } from '$lib/urx-cms';
 
 export const load = async () => {
 	const content = loadPageContent(homePage);
 	const sections = await injectBlogGridIntoSections(content.sections, {
 		limit: 3,
-		fallbackImage: urxBlogConfig.fallbackImage
+		fallbackImage: urxCmsConfig.fallbackImage
 	});
 
 	return {

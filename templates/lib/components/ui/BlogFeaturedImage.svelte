@@ -2,8 +2,8 @@
 	import {
 		DEFAULT_BLOG_IMAGE_PLACEHOLDER,
 		isBlogImagePlaceholder
-	} from '@urixoft/urx-blog-package';
-	import { urxBlogConfig } from '$lib/urx-blog';
+	} from '@urixoft/urx-cms-package';
+	import { urxCmsConfig } from '$lib/urx-cms';
 
 	type Props = {
 		src?: string | null;
@@ -20,7 +20,7 @@
 		loadFailed = false;
 	});
 
-	const placeholder = urxBlogConfig.fallbackImage ?? DEFAULT_BLOG_IMAGE_PLACEHOLDER;
+	const placeholder = urxCmsConfig.fallbackImage ?? DEFAULT_BLOG_IMAGE_PLACEHOLDER;
 	const requestedSrc = $derived(src?.trim() ?? '');
 	const showPlaceholder = $derived(
 		!requestedSrc || isBlogImagePlaceholder(requestedSrc, placeholder) || loadFailed

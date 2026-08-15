@@ -6,8 +6,8 @@
 
 <div class="mx-auto max-w-md">
 	<div class="rounded-2xl border border-slate-800 bg-slate-900 p-8 shadow-xl">
-		<h1 class="text-2xl font-bold text-white">URX Blog Admin</h1>
-		<p class="mt-2 text-sm text-slate-400">Sign in to manage news posts for your site.</p>
+		<h1 class="text-2xl font-bold text-white">Urixoft CMS</h1>
+		<p class="mt-2 text-sm text-slate-400">Sign in to manage site content.</p>
 
 		<form method="POST" use:enhance class="mt-8 space-y-4">
 			<div>

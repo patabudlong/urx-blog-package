@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { cmsPaths } from '$lib/urx-cms';
+
 	let { data } = $props();
 </script>
 
@@ -6,7 +8,7 @@
 	<div class="flex items-center justify-between">
 		<h1 class="text-2xl font-bold text-white">Posts</h1>
 		<a
-			href="/blog-admin/posts/new"
+			href={cmsPaths.newPost}
 			class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-500"
 		>
 			New Post
@@ -42,7 +44,7 @@
 							{new Intl.DateTimeFormat('en-US').format(post.updatedAt)}
 						</td>
 						<td class="px-4 py-3 text-right">
-							<a href="/blog-admin/posts/{post.id}" class="text-blue-400 hover:text-blue-300">Edit</a>
+							<a href={cmsPaths.editPost(post.id)} class="text-blue-400 hover:text-blue-300">Edit</a>
 						</td>
 					</tr>
 				{/each}

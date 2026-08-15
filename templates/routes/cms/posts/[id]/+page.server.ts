@@ -1,25 +1,27 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 import {
 	deletePost,
+	getConfiguredBlogBasePath,
 	getPostById,
 	getSessionFromCookies,
 	isBlogStorageConfigured,
 	resolveFeaturedImageFromForm,
 	slugify,
 	updatePost
-} from '@urixoft/urx-blog-package';
+} from '@urixoft/urx-cms-package';
+import { cmsPaths } from '$lib/urx-cms';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
 	const post = await getPostById(Number(params.id));
 	if (!post) error(404, 'Post not found');
-	return { post, storageConfigured: isBlogStorageConfigured() };
+	return { post, storageConfigured: isBlogStorageConfigured(), blogBasePath: getConfiguredBlogBasePath() };
 };
 
 export const actions: Actions = {
 	update: async ({ request, cookies, params }) => {
 		const user = getSessionFromCookies(cookies);
-		if (!user) redirect(303, '/blog-admin/login');
+		if (!user) redirect(303, cmsPaths.login);
 
 		const existing = await getPostById(Number(params.id));
 		if (!existing) error(404, 'Post not found');
@@ -61,9 +63,9 @@ export const actions: Actions = {
 
 	delete: async ({ cookies, params }) => {
 		const user = getSessionFromCookies(cookies);
-		if (!user) redirect(303, '/blog-admin/login');
+		if (!user) redirect(303, cmsPaths.login);
 
 		await deletePost(Number(params.id));
-		redirect(303, '/blog-admin/posts');
+		redirect(303, cmsPaths.posts);
 	}
 };

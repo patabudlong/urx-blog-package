@@ -1,3 +1,5 @@
+import { getBlogNavLabel, normalizeBlogNavLabel, getBlogBasePath, type BlogNavLabel, type BlogIndexPath } from '../adapters/blog-nav.js';
+
 let sessionSecret: string | undefined;
 let databasePath: string | undefined;
 let linodeEndpoint: string | undefined;
@@ -7,8 +9,9 @@ let linodeSecretKey: string | undefined;
 let linodeRegion: string | undefined;
 let linodePublicBase: string | undefined;
 let linodeUploadPrefix: string | undefined;
+let blogNavLabel: BlogNavLabel | undefined;
 
-export type UrxBlogRuntimeConfig = {
+export type UrxCmsRuntimeConfig = {
 	sessionSecret?: string;
 	databasePath?: string;
 	linodeEndpoint?: string;
@@ -18,9 +21,10 @@ export type UrxBlogRuntimeConfig = {
 	linodeRegion?: string;
 	linodePublicBase?: string;
 	linodeUploadPrefix?: string;
+	navLabel?: string;
 };
 
-export function configureUrxBlog(config: UrxBlogRuntimeConfig): void {
+export function configureUrxCms(config: UrxCmsRuntimeConfig): void {
 	if (config.sessionSecret) sessionSecret = config.sessionSecret;
 	if (config.databasePath) databasePath = config.databasePath;
 	if (config.linodeEndpoint) linodeEndpoint = config.linodeEndpoint;
@@ -30,19 +34,28 @@ export function configureUrxBlog(config: UrxBlogRuntimeConfig): void {
 	if (config.linodeRegion) linodeRegion = config.linodeRegion;
 	if (config.linodePublicBase) linodePublicBase = config.linodePublicBase;
 	if (config.linodeUploadPrefix) linodeUploadPrefix = config.linodeUploadPrefix;
+	if (config.navLabel) blogNavLabel = normalizeBlogNavLabel(config.navLabel);
+}
+
+export function getConfiguredBlogNavLabel(): BlogNavLabel {
+	return blogNavLabel ?? getBlogNavLabel();
+}
+
+export function getConfiguredBlogBasePath(): BlogIndexPath {
+	return getBlogBasePath(getConfiguredBlogNavLabel());
 }
 
 export function getLinodeUploadPrefix(): string {
-	const prefix = linodeUploadPrefix ?? process.env.LINODE_UPLOAD_PREFIX ?? 'urx-blog';
+	const prefix = linodeUploadPrefix ?? process.env.LINODE_UPLOAD_PREFIX ?? 'urx-cms';
 	return prefix.replace(/^\/+|\/+$/g, '');
 }
 
 export function getConfiguredSessionSecret(): string | undefined {
-	return sessionSecret ?? process.env.URX_BLOG_SESSION_SECRET;
+	return sessionSecret ?? process.env.URX_CMS_SESSION_SECRET;
 }
 
 export function getConfiguredDatabasePath(): string | undefined {
-	return databasePath ?? process.env.URX_BLOG_DB_PATH;
+	return databasePath ?? process.env.URX_CMS_DB_PATH;
 }
 
 export function getLinodeStorageConfig():

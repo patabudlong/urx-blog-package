@@ -16,11 +16,11 @@ async function removeDir(path: string): Promise<void> {
 }
 
 export async function remove(projectRoot = process.cwd()): Promise<void> {
-	console.log('\n📦 Urixoft Blog Package — remove\n');
+	console.log('\n📦 Urixoft CMS Package — remove\n');
 
 	const manifest = await readManifest(projectRoot);
 	if (!manifest) {
-		console.log('No .urx-blog.json manifest found. Nothing to remove.');
+		console.log('No .urx-cms.json manifest found. Nothing to remove.');
 		return;
 	}
 
@@ -30,10 +30,11 @@ export async function remove(projectRoot = process.cwd()): Promise<void> {
 		console.log(`   removed ${file}`);
 	}
 
+	await removeDir(join(projectRoot, 'src/routes/cms'));
 	await removeDir(join(projectRoot, 'src/routes/blog-admin'));
 	await removePath(join(projectRoot, MANIFEST_FILE));
 
-	console.log('\n✅ Urixoft Blog Package removed from this project.');
-	console.log('   Note: SQLite database at data/urx-blog.db was left intact.');
+	console.log('\n✅ Urixoft CMS Package removed from this project.');
+	console.log('   Note: SQLite database at data/urixoft-local.db was left intact.');
 	console.log('   Delete it manually if you want a clean reinstall.\n');
 }

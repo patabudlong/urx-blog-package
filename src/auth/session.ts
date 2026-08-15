@@ -2,13 +2,13 @@ import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 import { getConfiguredSessionSecret } from '../config/runtime.js';
 import type { BlogUser } from '../types.js';
 
-const SESSION_COOKIE = 'urx_blog_session';
+const SESSION_COOKIE = 'urx_cms_session';
 const SESSION_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
 
 export function getSessionSecret(): string {
 	const secret = getConfiguredSessionSecret();
 	if (!secret) {
-		throw new Error('URX_BLOG_SESSION_SECRET is not set. Run `pnpm urx-blog install` first.');
+		throw new Error('URX_CMS_SESSION_SECRET is not set. Run `pnpm urx-cms install` first.');
 	}
 	return secret;
 }

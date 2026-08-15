@@ -14,14 +14,14 @@ try {
 		await migrate();
 	} else {
 		console.log(`
-Urixoft Blog Package CLI
+Urixoft CMS Package CLI
 
 Usage:
-  urx-blog install   Install blog routes, SQLite database, and seed data
-  urx-blog migrate   Run migrations and seed data
-  urx-blog remove    Remove installed files from this project
+  urx-cms install   Install blog routes, SQLite database, and seed data
+  urx-cms migrate   Run migrations and seed data
+  urx-cms remove    Remove installed files from this project
 
-Database: SQLite (node:sqlite) at data/urx-blog.db — no Docker required
+Database: SQLite (node:sqlite) at data/urixoft-local.db — no Docker required
 Default admin: superadmin@urixoft.com / passWord1234!
 `);
 		process.exit(command ? 1 : 0);

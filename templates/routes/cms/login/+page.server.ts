@@ -4,7 +4,8 @@ import {
 	getSessionCookieName,
 	getSessionMaxAge,
 	verifyUser
-} from '@urixoft/urx-blog-package';
+} from '@urixoft/urx-cms-package';
+import { cmsPaths } from '$lib/urx-cms';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = () => ({});
@@ -32,6 +33,6 @@ export const actions: Actions = {
 			maxAge: getSessionMaxAge()
 		});
 
-		redirect(303, '/blog-admin');
+		redirect(303, cmsPaths.root);
 	}
 };

@@ -2,16 +2,16 @@ import { mkdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { getConfiguredDatabasePath } from '../config/runtime.js';
-import type { UrxBlogConfig } from '../types.js';
+import type { UrxCmsConfig } from '../types.js';
 
 let db: DatabaseSync | null = null;
 
-export function getDatabasePath(config: UrxBlogConfig = {}, projectRoot = process.cwd()): string {
-	const fromConfig = config.databasePath ?? getConfiguredDatabasePath() ?? 'data/urx-blog.db';
+export function getDatabasePath(config: UrxCmsConfig = {}, projectRoot = process.cwd()): string {
+	const fromConfig = config.databasePath ?? getConfiguredDatabasePath() ?? 'data/urixoft-local.db';
 	return resolve(projectRoot, fromConfig);
 }
 
-export function getDb(config: UrxBlogConfig = {}, projectRoot = process.cwd()): DatabaseSync {
+export function getDb(config: UrxCmsConfig = {}, projectRoot = process.cwd()): DatabaseSync {
 	if (!db) {
 		const path = getDatabasePath(config, projectRoot);
 		mkdirSync(dirname(path), { recursive: true });
@@ -53,7 +53,7 @@ export async function closeDb(): Promise<void> {
 	}
 }
 
-export async function pingDatabase(config: UrxBlogConfig = {}): Promise<boolean> {
+export async function pingDatabase(config: UrxCmsConfig = {}): Promise<boolean> {
 	try {
 		getDb(config).prepare('SELECT 1').get();
 		return true;

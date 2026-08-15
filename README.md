@@ -1,14 +1,14 @@
-# @urixoft/urx-blog-package
+# @urixoft/urx-cms-package
 
-Lightweight SQLite-backed blog for Urixoft SvelteKit projects. Powers the **Latest News** section and full `/blog` routes with an admin panel — no Docker required.
+Lightweight SQLite-backed CMS for Urixoft SvelteKit projects. Powers blog/news content, `/cms` admin, and future site modules — no Docker required.
 
 ## Stack
 
 | Layer | Choice | Why |
 |-------|--------|-----|
 | Database | **SQLite** (`node:sqlite`) | Built into Node 22+, zero install, single file, no native build |
-| Storage | `data/urx-blog.db` | Portable, gitignored, created on install |
-| Images | **Linode Object Storage** (S3-compatible) | Featured image uploads from blog admin |
+| Storage | `data/urixoft-local.db` | Portable, gitignored, created on install |
+| Images | **Linode Object Storage** (S3-compatible) | Featured image uploads from CMS |
 | Auth | bcryptjs + signed HTTP-only cookies | Simple admin sessions without extra deps |
 | ORM | None (raw SQL) | Minimal footprint, easy to inspect |
 
@@ -17,30 +17,30 @@ Lightweight SQLite-backed blog for Urixoft SvelteKit projects. Powers the **Late
 From your SvelteKit project root:
 
 ```bash
-pnpm add github:patabudlong/urx-blog-package#v0.3.0
-pnpm urx-blog install
+pnpm add github:patabudlong/urx-cms-package#v0.3.0
+pnpm urx-cms install
 ```
 
 This will:
 
 1. Add `.env` entries for database path + session secret
 2. Copy route templates into `src/routes/` (including `hooks.server.ts`)
-3. Create `data/urx-blog.db` and run migrations
+3. Create `data/urixoft-local.db` and run migrations
 4. Seed 3 sample posts
 5. Create default admin: `superadmin@urixoft.com` / `passWord1234!`
-6. Write `.urx-blog.json` manifest for clean removal
+6. Write `.urx-cms.json` manifest for clean removal
 
 ## SvelteKit environment bridge
 
 SvelteKit loads `.env` via `$env/dynamic/private`, not `process.env`. The install template adds `src/hooks.server.ts`:
 
 ```ts
-import { createBlogEnvHandle } from '@urixoft/urx-blog-package/sveltekit';
+import { createCmsEnvHandle } from '@urixoft/urx-cms-package/sveltekit';
 import { env } from '$env/dynamic/private';
 
-export const handle = createBlogEnvHandle(() => ({
-  URX_BLOG_SESSION_SECRET: env.URX_BLOG_SESSION_SECRET,
-  URX_BLOG_DB_PATH: env.URX_BLOG_DB_PATH,
+export const handle = createCmsEnvHandle(() => ({
+  URX_CMS_SESSION_SECRET: env.URX_CMS_SESSION_SECRET,
+  URX_CMS_DB_PATH: env.URX_CMS_DB_PATH,
   LINODE_ENDPOINT: env.LINODE_ENDPOINT,
   LINODE_BUCKET: env.LINODE_BUCKET,
   LINODE_ACCESS_KEY: env.LINODE_ACCESS_KEY,
@@ -52,7 +52,7 @@ export const handle = createBlogEnvHandle(() => ({
 
 ## Image uploads (Linode Object Storage)
 
-Configure Linode S3-compatible storage in `.env`. When set, the blog admin shows a **Featured Image Upload** field on create/edit post forms. Files are stored under a configurable prefix (default `urx-blog/`) in your bucket.
+Configure Linode S3-compatible storage in `.env`. When set, the CMS shows a **Featured Image Upload** field on create/edit post forms. Files are stored under a configurable prefix (default `urx-cms/`) in your bucket.
 
 ```env
 LINODE_ENDPOINT=https://sg-sin-1.linodeobjects.com
@@ -61,7 +61,7 @@ LINODE_ACCESS_KEY=your-access-key
 LINODE_SECRET_KEY=your-secret-key
 LINODE_REGION=sg-sin-1
 LINODE_PUBLIC_BASE=https://your-bucket.sg-sin-1.linodeobjects.com
-LINODE_UPLOAD_PREFIX=urx-blog
+LINODE_UPLOAD_PREFIX=urx-cms
 ```
 
 - Allowed types: JPEG, PNG, WebP, GIF
@@ -72,10 +72,10 @@ LINODE_UPLOAD_PREFIX=urx-blog
 
 Install copies `BlogFeaturedImage.svelte` and `/images/blog/placeholder.svg`. Posts without a featured image (or with a broken URL) show a blurred placeholder with an **Image coming soon** label.
 
-Customize the fallback in `src/lib/urx-blog.ts`:
+Customize the fallback in `src/lib/urx-cms.ts`:
 
 ```ts
-export const urxBlogConfig = {
+export const urxCmsConfig = {
   fallbackImage: '/images/blog/placeholder.svg',
   uploadPrefix: 'your-bucket-folder'
 };
@@ -88,13 +88,13 @@ import {
   resolveBlogImageUrl,
   isBlogImagePlaceholder,
   DEFAULT_BLOG_IMAGE_PLACEHOLDER
-} from '@urixoft/urx-blog-package';
+} from '@urixoft/urx-cms-package';
 ```
 
 ### Programmatic upload
 
 ```ts
-import { uploadBlogImage, resolveFeaturedImageFromForm } from '@urixoft/urx-blog-package';
+import { uploadBlogImage, resolveFeaturedImageFromForm } from '@urixoft/urx-cms-package';
 
 const url = await uploadBlogImage({
   buffer,
@@ -106,7 +106,7 @@ const url = await uploadBlogImage({
 ## Remove
 
 ```bash
-pnpm urx-blog remove
+pnpm urx-cms remove
 ```
 
 ## Routes added on install
@@ -115,24 +115,24 @@ pnpm urx-blog remove
 |-------|---------|
 | `/blog` | Blog index |
 | `/blog/[slug]` | Post detail |
-| `/blog-admin` | Admin dashboard |
-| `/blog-admin/login` | Admin sign-in |
-| `/blog-admin/posts` | Post list |
-| `/blog-admin/posts/new` | Create post |
-| `/blog-admin/posts/[id]` | Edit post |
+| `/cms` | Admin dashboard |
+| `/cms/login` | Admin sign-in |
+| `/cms/posts` | Post list |
+| `/cms/posts/new` | Create post |
+| `/cms/posts/[id]` | Edit post |
 
 ## Programmatic API
 
 ```ts
-import { listPublishedPosts, isBlogStorageConfigured } from '@urixoft/urx-blog-package';
-import { injectBlogGridIntoSections } from '@urixoft/urx-blog-package/sveltekit';
+import { listPublishedPosts, isBlogStorageConfigured } from '@urixoft/urx-cms-package';
+import { injectBlogGridIntoSections } from '@urixoft/urx-cms-package/sveltekit';
 ```
 
 ## Environment variables
 
 ```env
-URX_BLOG_DB_PATH=data/urx-blog.db
-URX_BLOG_SESSION_SECRET=<random-hex>
+URX_CMS_DB_PATH=data/urixoft-local.db
+URX_CMS_SESSION_SECRET=<random-hex>
 
 # Optional — enables featured image uploads in admin
 LINODE_ENDPOINT=https://sg-sin-1.linodeobjects.com
@@ -141,7 +141,7 @@ LINODE_ACCESS_KEY=your-access-key
 LINODE_SECRET_KEY=your-secret-key
 LINODE_REGION=sg-sin-1
 LINODE_PUBLIC_BASE=https://your-bucket.sg-sin-1.linodeobjects.com
-LINODE_UPLOAD_PREFIX=urx-blog
+LINODE_UPLOAD_PREFIX=urx-cms
 ```
 
 ## Default admin

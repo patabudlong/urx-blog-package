@@ -41,14 +41,14 @@ export type BlogGridData = {
 	posts: BlogPostCard[];
 };
 
-export type UrxBlogConfig = {
+export type UrxCmsConfig = {
 	databasePath?: string;
 	sessionSecret?: string;
 	adminPath?: string;
 	fallbackImage?: string;
 };
 
-export type UrxBlogManifest = {
+export type UrxCmsManifest = {
 	version: string;
 	installedAt: string;
 	packageName: string;

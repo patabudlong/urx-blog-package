@@ -19,7 +19,7 @@ async function loadEnvFile(projectRoot: string): Promise<void> {
 }
 
 export async function migrate(projectRoot = process.cwd()): Promise<void> {
-	console.log('\n📦 Urixoft Blog Package — migrate\n');
+	console.log('\n📦 Urixoft CMS Package — migrate\n');
 	await loadEnvFile(projectRoot);
 	await setupDatabase();
 	console.log('\n✅ SQLite database migrated and seeded.\n');

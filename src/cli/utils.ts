@@ -1,10 +1,10 @@
 import { copyFile, mkdir, readFile, readdir, stat, writeFile } from 'node:fs/promises';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { UrxBlogManifest } from '../types.js';
+import type { UrxCmsManifest } from '../types.js';
 
-export const MANIFEST_FILE = '.urx-blog.json';
-export const PACKAGE_NAME = '@urixoft/urx-blog-package';
+export const MANIFEST_FILE = '.urx-cms.json';
+export const PACKAGE_NAME = '@urixoft/urx-cms-package';
 
 export function getPackageRoot(): string {
 	return join(dirname(fileURLToPath(import.meta.url)), '../..');
@@ -38,13 +38,13 @@ export async function copyDir(src: string, dest: string, copied: string[] = []):
 	return copied;
 }
 
-export async function readManifest(projectRoot: string): Promise<UrxBlogManifest | null> {
+export async function readManifest(projectRoot: string): Promise<UrxCmsManifest | null> {
 	const manifestPath = join(projectRoot, MANIFEST_FILE);
 	if (!(await pathExists(manifestPath))) return null;
-	return JSON.parse(await readFile(manifestPath, 'utf8')) as UrxBlogManifest;
+	return JSON.parse(await readFile(manifestPath, 'utf8')) as UrxCmsManifest;
 }
 
-export async function writeManifest(projectRoot: string, manifest: UrxBlogManifest): Promise<void> {
+export async function writeManifest(projectRoot: string, manifest: UrxCmsManifest): Promise<void> {
 	await writeFile(join(projectRoot, MANIFEST_FILE), JSON.stringify(manifest, null, 2) + '\n', 'utf8');
 }
 
@@ -76,8 +76,8 @@ export async function upsertEnvExample(projectRoot: string, entries: Record<stri
 		content = await readFile(envPath, 'utf8');
 	}
 
-	if (!content.includes('# Urixoft Blog Package')) {
-		content += '\n# Urixoft Blog Package\n';
+	if (!content.includes('# Urixoft CMS Package')) {
+		content += '\n# Urixoft CMS Package\n';
 	}
 
 	for (const [key, value] of Object.entries(entries)) {

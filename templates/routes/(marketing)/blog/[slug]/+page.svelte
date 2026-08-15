@@ -40,8 +40,11 @@
 				{@html post.content}
 			</div>
 
-			<a href="/blog" class="mt-10 inline-block text-sm font-medium text-brand hover:underline">
-				← Back to Blog
+			<a
+				href={data.blogBasePath}
+				class="mt-10 inline-block text-sm font-medium text-brand hover:underline"
+			>
+				← Back to {data.blogNavLabel}
 			</a>
 		</div>
 	</Container>

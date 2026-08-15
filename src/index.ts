@@ -1,9 +1,11 @@
 export * from './types.js';
 export {
-	configureUrxBlog,
+	configureUrxCms,
 	isBlogStorageConfigured,
 	getLinodeStorageConfig,
-	getLinodeUploadPrefix
+	getLinodeUploadPrefix,
+	getConfiguredBlogNavLabel,
+	getConfiguredBlogBasePath
 } from './config/runtime.js';
 export { getDatabasePath, pingDatabase, closeDb } from './db/connection.js';
 export { migrate, seed, setupDatabase } from './db/migrate.js';
@@ -32,6 +34,20 @@ export {
 	resolveBlogImageUrl,
 	isBlogImagePlaceholder
 } from './adapters/blog-image.js';
+export {
+	BLOG_NAV_LABELS,
+	DEFAULT_BLOG_NAV_LABEL,
+	DEFAULT_BLOG_HREF,
+	NEWS_BLOG_HREF,
+	BLOG_INDEX_PATHS,
+	normalizeBlogNavLabel,
+	getBlogBasePath,
+	isBlogIndexPath,
+	rewriteBlogHref,
+	applyBlogNavLabel,
+	getBlogNavLabel
+} from './adapters/blog-nav.js';
+export type { BlogNavLabel, BlogNavLink, BlogIndexPath } from './adapters/blog-nav.js';
 export { createBlogLoaders, injectBlogGridIntoSections } from './sveltekit/loaders.js';
 export { DEFAULT_ADMIN_EMAIL, DEFAULT_ADMIN_PASSWORD } from './types.js';
 export { uploadBlogImage, resolveFeaturedImageFromForm } from './storage/linode.js';

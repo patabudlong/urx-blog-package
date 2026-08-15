@@ -22,7 +22,7 @@ Usage:
   urx-blog remove    Remove installed files from this project
 
 Database: SQLite (node:sqlite) at data/urx-blog.db — no Docker required
-Default admin: superadmin@urixoft.com / Use8to32!
+Default admin: superadmin@urixoft.com / passWord1234!
 `);
 		process.exit(command ? 1 : 0);
 	}

@@ -103,7 +103,7 @@ export async function install(projectRoot = process.cwd()): Promise<void> {
 	console.log('   Database:       data/urx-blog.db (SQLite, no Docker required)');
 	console.log('   Admin URL:      /blog-admin');
 	console.log('   Admin email:    superadmin@urixoft.com');
-	console.log('   Admin password: Use8to32!');
+	console.log('   Admin password: passWord1234!');
 	console.log(`   Manifest:       ${MANIFEST_FILE}\n`);
 	console.log('   Next: restart your dev server and visit /blog\n');
 }

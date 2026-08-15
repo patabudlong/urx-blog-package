@@ -1,6 +1,6 @@
 {
 	"name": "@urixoft/urx-blog-package",
-	"version": "0.3.0",
+	"version": "0.3.1",
 	"description": "Lightweight SQLite-backed blog package for Urixoft SvelteKit projects (node:sqlite, no Docker)",
 	"type": "module",
 	"license": "UNLICENSED",

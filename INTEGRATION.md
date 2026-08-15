@@ -26,4 +26,4 @@ Set `LINODE_*` variables in `.env` to enable featured image uploads in `/blog-ad
 
 - **URL:** `/blog-admin`
 - **Email:** `superadmin@urixoft.com`
-- **Password:** `Use8to32!`
+- **Password:** `passWord1234!`

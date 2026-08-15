@@ -29,6 +29,23 @@ function daysAgoIso(days: number): string {
 	return date.toISOString();
 }
 
+async function createDefaultAdmin(): Promise<number> {
+	const passwordHash = await bcrypt.hash(DEFAULT_ADMIN_PASSWORD, 10);
+	return execute(
+		`INSERT INTO urx_blog_users (email, password_hash, role)
+		 VALUES (:email, :passwordHash, 'admin')`,
+		{ email: DEFAULT_ADMIN_EMAIL, passwordHash }
+	);
+}
+
+async function syncDefaultAdminPassword(): Promise<void> {
+	const passwordHash = await bcrypt.hash(DEFAULT_ADMIN_PASSWORD, 10);
+	await execute(
+		`UPDATE urx_blog_users SET password_hash = :passwordHash WHERE email = :email`,
+		{ email: DEFAULT_ADMIN_EMAIL, passwordHash }
+	);
+}
+
 export async function migrate(): Promise<void> {
 	const schema = await readSqlFile('schema.sql');
 	runStatements(schema);
@@ -41,16 +58,12 @@ export async function seed(): Promise<void> {
 	);
 
 	if (!existingAdmin) {
-		const passwordHash = await bcrypt.hash(DEFAULT_ADMIN_PASSWORD, 10);
-		const adminId = await execute(
-			`INSERT INTO urx_blog_users (email, password_hash, role)
-			 VALUES (:email, :passwordHash, 'admin')`,
-			{ email: DEFAULT_ADMIN_EMAIL, passwordHash }
-		);
-
+		const adminId = await createDefaultAdmin();
 		await seedSamplePosts(adminId);
 		return;
 	}
+
+	await syncDefaultAdminPassword();
 
 	const postCount = await queryOne<{ count: number }>(
 		'SELECT COUNT(*) as count FROM urx_blog_posts'

@@ -1,5 +1,5 @@
 export const DEFAULT_ADMIN_EMAIL = 'superadmin@urixoft.com';
-export const DEFAULT_ADMIN_PASSWORD = 'Use8to32!';
+export const DEFAULT_ADMIN_PASSWORD = 'passWord1234!';
 
 export type BlogPostStatus = 'draft' | 'published';
 

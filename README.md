@@ -27,7 +27,7 @@ This will:
 2. Copy route templates into `src/routes/` (including `hooks.server.ts`)
 3. Create `data/urx-blog.db` and run migrations
 4. Seed 3 sample posts
-5. Create default admin: `superadmin@urixoft.com` / `Use8to32!`
+5. Create default admin: `superadmin@urixoft.com` / `passWord1234!`
 6. Write `.urx-blog.json` manifest for clean removal
 
 ## SvelteKit environment bridge
@@ -122,6 +122,6 @@ LINODE_PUBLIC_BASE=https://your-bucket.sg-sin-1.linodeobjects.com
 ## Default admin
 
 - **Email:** superadmin@urixoft.com
-- **Password:** Use8to32!
+- **Password:** passWord1234!
 
 Change the password after first login in production.

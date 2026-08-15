@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Container from '$lib/components/layout/Container.svelte';
-	import LazyImage from '$lib/components/ui/LazyImage.svelte';
+	import BlogFeaturedImage from '$lib/components/ui/BlogFeaturedImage.svelte';
 
 	let { data } = $props();
 	const post = $derived(data.post);
@@ -30,13 +30,11 @@
 
 			<h1 class="text-3xl font-bold sm:text-4xl">{post.title}</h1>
 
-			{#if post.featuredImage}
-				<LazyImage
-					src={post.featuredImage}
-					alt={post.title}
-					class="mt-8 w-full rounded-2xl object-cover"
-				/>
-			{/if}
+			<BlogFeaturedImage
+				src={post.featuredImage}
+				alt={post.title}
+				class="mt-8 w-full rounded-2xl"
+			/>
 
 			<div class="prose prose-neutral mt-8 max-w-none">
 				{@html post.content}

@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { extname } from 'node:path';
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { getLinodeStorageConfig } from '../config/runtime.js';
+import { getLinodeStorageConfig, getLinodeUploadPrefix } from '../config/runtime.js';
 
 const ALLOWED_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
 const MAX_BYTES = 5 * 1024 * 1024;
@@ -63,7 +63,7 @@ export async function uploadBlogImage(upload: BlogImageUpload): Promise<string> 
 	}
 
 	const ext = extensionFor(upload.contentType, upload.filename);
-	const key = `urx-blog/${randomUUID()}${ext}`;
+	const key = `${getLinodeUploadPrefix()}/${randomUUID()}${ext}`;
 	const client = getClient();
 
 	await client.send(

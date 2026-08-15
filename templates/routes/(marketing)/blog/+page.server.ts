@@ -1,5 +1,5 @@
-import { listPublishedPosts } from '@urixoft/urx-blog-package';
-import { toBlogPostCard } from '@urixoft/urx-blog-package';
+import { listPublishedPosts, toBlogPostCard } from '@urixoft/urx-blog-package';
+import { urxBlogConfig } from '$lib/urx-blog';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
@@ -10,7 +10,7 @@ export const load: PageServerLoad = async () => {
 				title: 'Blog',
 				description: 'Latest news and port operations insights.'
 			},
-			posts: posts.map((post) => toBlogPostCard(post))
+			posts: posts.map((post) => toBlogPostCard(post, urxBlogConfig.fallbackImage))
 		};
 	} catch (error) {
 		console.warn('[urx-blog] Blog index fallback:', error);

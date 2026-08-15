@@ -52,7 +52,7 @@ export const handle = createBlogEnvHandle(() => ({
 
 ## Image uploads (Linode Object Storage)
 
-Configure Linode S3-compatible storage in `.env`. When set, the blog admin shows a **Featured Image Upload** field on create/edit post forms. Files are stored under `urx-blog/` in your bucket.
+Configure Linode S3-compatible storage in `.env`. When set, the blog admin shows a **Featured Image Upload** field on create/edit post forms. Files are stored under a configurable prefix (default `urx-blog/`) in your bucket.
 
 ```env
 LINODE_ENDPOINT=https://sg-sin-1.linodeobjects.com
@@ -61,11 +61,35 @@ LINODE_ACCESS_KEY=your-access-key
 LINODE_SECRET_KEY=your-secret-key
 LINODE_REGION=sg-sin-1
 LINODE_PUBLIC_BASE=https://your-bucket.sg-sin-1.linodeobjects.com
+LINODE_UPLOAD_PREFIX=urx-blog
 ```
 
 - Allowed types: JPEG, PNG, WebP, GIF
 - Max size: 5 MB
 - You can still paste an image URL instead of uploading
+
+### Image placeholders
+
+Install copies `BlogFeaturedImage.svelte` and `/images/blog/placeholder.svg`. Posts without a featured image (or with a broken URL) show a blurred placeholder with an **Image coming soon** label.
+
+Customize the fallback in `src/lib/urx-blog.ts`:
+
+```ts
+export const urxBlogConfig = {
+  fallbackImage: '/images/blog/placeholder.svg',
+  uploadPrefix: 'your-bucket-folder'
+};
+```
+
+Helpers exported from the package:
+
+```ts
+import {
+  resolveBlogImageUrl,
+  isBlogImagePlaceholder,
+  DEFAULT_BLOG_IMAGE_PLACEHOLDER
+} from '@urixoft/urx-blog-package';
+```
 
 ### Programmatic upload
 
@@ -117,6 +141,7 @@ LINODE_ACCESS_KEY=your-access-key
 LINODE_SECRET_KEY=your-secret-key
 LINODE_REGION=sg-sin-1
 LINODE_PUBLIC_BASE=https://your-bucket.sg-sin-1.linodeobjects.com
+LINODE_UPLOAD_PREFIX=urx-blog
 ```
 
 ## Default admin

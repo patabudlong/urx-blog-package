@@ -10,6 +10,7 @@ type BlogEnv = {
 	LINODE_SECRET_KEY?: string;
 	LINODE_REGION?: string;
 	LINODE_PUBLIC_BASE?: string;
+	LINODE_UPLOAD_PREFIX?: string;
 };
 
 export function createBlogEnvHandle(getEnv: () => BlogEnv): Handle {
@@ -23,7 +24,8 @@ export function createBlogEnvHandle(getEnv: () => BlogEnv): Handle {
 			linodeAccessKey: env.LINODE_ACCESS_KEY,
 			linodeSecretKey: env.LINODE_SECRET_KEY,
 			linodeRegion: env.LINODE_REGION,
-			linodePublicBase: env.LINODE_PUBLIC_BASE
+			linodePublicBase: env.LINODE_PUBLIC_BASE,
+			linodeUploadPrefix: env.LINODE_UPLOAD_PREFIX
 		});
 		return resolve(event);
 	};

@@ -6,6 +6,7 @@ let linodeAccessKey: string | undefined;
 let linodeSecretKey: string | undefined;
 let linodeRegion: string | undefined;
 let linodePublicBase: string | undefined;
+let linodeUploadPrefix: string | undefined;
 
 export type UrxBlogRuntimeConfig = {
 	sessionSecret?: string;
@@ -16,6 +17,7 @@ export type UrxBlogRuntimeConfig = {
 	linodeSecretKey?: string;
 	linodeRegion?: string;
 	linodePublicBase?: string;
+	linodeUploadPrefix?: string;
 };
 
 export function configureUrxBlog(config: UrxBlogRuntimeConfig): void {
@@ -27,6 +29,12 @@ export function configureUrxBlog(config: UrxBlogRuntimeConfig): void {
 	if (config.linodeSecretKey) linodeSecretKey = config.linodeSecretKey;
 	if (config.linodeRegion) linodeRegion = config.linodeRegion;
 	if (config.linodePublicBase) linodePublicBase = config.linodePublicBase;
+	if (config.linodeUploadPrefix) linodeUploadPrefix = config.linodeUploadPrefix;
+}
+
+export function getLinodeUploadPrefix(): string {
+	const prefix = linodeUploadPrefix ?? process.env.LINODE_UPLOAD_PREFIX ?? 'urx-blog';
+	return prefix.replace(/^\/+|\/+$/g, '');
 }
 
 export function getConfiguredSessionSecret(): string | undefined {

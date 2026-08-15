@@ -1,7 +1,10 @@
 import type { BlogGridData, BlogPost, BlogPostCard } from '../types.js';
+import {
+	DEFAULT_BLOG_IMAGE_PLACEHOLDER,
+	resolveBlogImageUrl
+} from './blog-image.js';
 
-const DEFAULT_FALLBACK_IMAGE =
-	'https://images.unsplash.com/photo-1494412574643-ff11b0a5c1da?w=800&q=80';
+const DEFAULT_FALLBACK_IMAGE = DEFAULT_BLOG_IMAGE_PLACEHOLDER;
 
 function formatDate(date: Date | null): string {
 	if (!date) return '';
@@ -17,7 +20,7 @@ export function toBlogPostCard(post: BlogPost, fallbackImage = DEFAULT_FALLBACK_
 		category: post.category,
 		date: formatDate(post.publishedAt),
 		title: post.title,
-		image: post.featuredImage ?? fallbackImage,
+		image: resolveBlogImageUrl(post.featuredImage, fallbackImage),
 		href: `/blog/${post.slug}`,
 		excerpt: post.excerpt ?? undefined
 	};

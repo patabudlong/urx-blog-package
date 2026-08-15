@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Container from '$lib/components/layout/Container.svelte';
-	import LazyImage from '$lib/components/ui/LazyImage.svelte';
+	import BlogFeaturedImage from '$lib/components/ui/BlogFeaturedImage.svelte';
 	import { resolve } from '$app/paths';
 	import type { Pathname } from '$app/types';
 
@@ -28,7 +28,7 @@
 			<div class="grid gap-6 lg:grid-cols-3">
 				{#each data.posts as post (post.href)}
 					<article class="overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
-						<LazyImage src={post.image} alt={post.title} class="h-48 w-full object-cover" />
+						<BlogFeaturedImage src={post.image} alt={post.title} class="h-48 w-full" />
 						<div class="p-6">
 							<div class="flex items-center gap-3 text-xs font-medium text-brand">
 								<span>{post.category}</span>

@@ -1,5 +1,6 @@
 import { createBlogEnvHandle } from '@urixoft/urx-blog-package/sveltekit';
 import { env } from '$env/dynamic/private';
+import { urxBlogConfig } from '$lib/urx-blog';
 
 export const handle = createBlogEnvHandle(() => ({
 	URX_BLOG_SESSION_SECRET: env.URX_BLOG_SESSION_SECRET,
@@ -9,5 +10,6 @@ export const handle = createBlogEnvHandle(() => ({
 	LINODE_ACCESS_KEY: env.LINODE_ACCESS_KEY,
 	LINODE_SECRET_KEY: env.LINODE_SECRET_KEY,
 	LINODE_REGION: env.LINODE_REGION,
-	LINODE_PUBLIC_BASE: env.LINODE_PUBLIC_BASE
+	LINODE_PUBLIC_BASE: env.LINODE_PUBLIC_BASE,
+	LINODE_UPLOAD_PREFIX: env.LINODE_UPLOAD_PREFIX ?? urxBlogConfig.uploadPrefix
 }));

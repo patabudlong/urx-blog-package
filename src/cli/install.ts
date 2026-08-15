@@ -57,7 +57,8 @@ export async function install(projectRoot = process.cwd()): Promise<void> {
 		LINODE_ACCESS_KEY: 'your-access-key',
 		LINODE_SECRET_KEY: 'your-secret-key',
 		LINODE_REGION: 'sg-sin-1',
-		LINODE_PUBLIC_BASE: 'https://your-bucket.sg-sin-1.linodeobjects.com'
+		LINODE_PUBLIC_BASE: 'https://your-bucket.sg-sin-1.linodeobjects.com',
+		LINODE_UPLOAD_PREFIX: 'urx-blog'
 	});
 	await loadEnvFile(projectRoot);
 
@@ -74,6 +75,12 @@ export async function install(projectRoot = process.cwd()): Promise<void> {
 
 	const libCopies = await copyDir(join(templatesDir, 'lib'), join(srcDir, 'lib'), []);
 	copiedFiles.push(...libCopies);
+
+	const staticTemplateDir = join(templatesDir, 'static');
+	if (await pathExists(staticTemplateDir)) {
+		const staticCopies = await copyDir(staticTemplateDir, join(projectRoot, 'static'), []);
+		copiedFiles.push(...staticCopies);
+	}
 
 	const srcTemplateDir = join(templatesDir, 'src');
 	if (await pathExists(srcTemplateDir)) {

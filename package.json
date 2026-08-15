@@ -1,6 +1,6 @@
 {
 	"name": "@urixoft/urx-cms-package",
-	"version": "0.4.0",
+	"version": "0.4.2",
 	"description": "Lightweight SQLite-backed CMS package for Urixoft SvelteKit projects (node:sqlite, no Docker)",
 	"type": "module",
 	"license": "UNLICENSED",
@@ -38,6 +38,9 @@
 	},
 	"peerDependencies": {
 		"@sveltejs/kit": "^2.0.0",
+		"@tiptap/core": "^2.11.5",
+		"@tiptap/extension-link": "^2.11.5",
+		"@tiptap/starter-kit": "^2.11.5",
 		"svelte": "^5.0.0"
 	},
 	"dependencies": {

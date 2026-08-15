@@ -6,6 +6,7 @@ export const BLOG_IMAGE_PLACEHOLDER = '/images/blog/placeholder.svg';
 
 export const urxCmsConfig = {
 	adminPath: '/cms',
+	defaultTheme: 'dark' as const,
 	fallbackImage: BLOG_IMAGE_PLACEHOLDER,
 	/** Linode Object Storage folder prefix for uploaded blog images */
 	uploadPrefix: 'urx-cms',
@@ -25,6 +26,18 @@ export function getCmsPaths(adminPath: string = urxCmsConfig.adminPath) {
 }
 
 export const cmsPaths = getCmsPaths();
+
+export const cmsNavItems = [
+	{ label: 'Dashboard', href: cmsPaths.root, match: (path: string) => path === cmsPaths.root },
+	{
+		label: 'Posts',
+		href: cmsPaths.posts,
+		match: (path: string) =>
+			path === cmsPaths.posts ||
+			(path.startsWith(`${cmsPaths.posts}/`) && path !== cmsPaths.newPost)
+	},
+	{ label: 'New Post', href: cmsPaths.newPost, match: (path: string) => path === cmsPaths.newPost }
+] as const;
 
 /** Normalize blog image URLs; empty values use the local placeholder. */
 export function resolveBlogImageUrl(

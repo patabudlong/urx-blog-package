@@ -1,91 +1,54 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import CmsRichTextEditor from '$lib/components/ui/CmsRichTextEditor.svelte';
 
 	let { data, form } = $props();
 </script>
 
 <div>
-	<h1 class="text-2xl font-bold text-white">New Post</h1>
+	<h1 class="cms-heading">New Post</h1>
 
 	<form method="POST" enctype="multipart/form-data" use:enhance class="mt-6 space-y-4">
 		<div class="grid gap-4 sm:grid-cols-2">
 			<div class="sm:col-span-2">
-				<label for="title" class="mb-1 block text-sm text-slate-300">Title</label>
-				<input
-					id="title"
-					name="title"
-					required
-					class="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
-				/>
+				<label for="title" class="cms-label">Title</label>
+				<input id="title" name="title" required class="cms-input" />
 			</div>
 			<div>
-				<label for="slug" class="mb-1 block text-sm text-slate-300">Slug (optional)</label>
-				<input
-					id="slug"
-					name="slug"
-					class="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
-				/>
+				<label for="slug" class="cms-label">Slug (optional)</label>
+				<input id="slug" name="slug" class="cms-input" />
 			</div>
 			<div>
-				<label for="category" class="mb-1 block text-sm text-slate-300">Category</label>
-				<input
-					id="category"
-					name="category"
-					value="News"
-					class="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
-				/>
+				<label for="category" class="cms-label">Category</label>
+				<input id="category" name="category" value="News" class="cms-input" />
 			</div>
 			{#if data.storageConfigured}
 				<div class="sm:col-span-2">
-					<label for="featuredImageFile" class="mb-1 block text-sm text-slate-300">
-						Featured Image Upload
-					</label>
+					<label for="featuredImageFile" class="cms-label">Featured Image Upload</label>
 					<input
 						id="featuredImageFile"
 						name="featuredImageFile"
 						type="file"
 						accept="image/jpeg,image/png,image/webp,image/gif"
-						class="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-300 file:mr-3 file:rounded file:border-0 file:bg-blue-600 file:px-3 file:py-1 file:text-white"
+						class="cms-input"
 					/>
-					<p class="mt-1 text-xs text-slate-500">Uploaded to Linode Object Storage (max 5 MB).</p>
+					<p class="cms-muted mt-1 text-xs">Uploaded to Linode Object Storage (max 5 MB).</p>
 				</div>
 			{/if}
 			<div class="sm:col-span-2">
-				<label for="featuredImage" class="mb-1 block text-sm text-slate-300">
+				<label for="featuredImage" class="cms-label">
 					Featured Image URL {data.storageConfigured ? '(optional if uploading)' : ''}
 				</label>
-				<input
-					id="featuredImage"
-					name="featuredImage"
-					class="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
-				/>
+				<input id="featuredImage" name="featuredImage" class="cms-input" />
 			</div>
 			<div class="sm:col-span-2">
-				<label for="excerpt" class="mb-1 block text-sm text-slate-300">Excerpt</label>
-				<textarea
-					id="excerpt"
-					name="excerpt"
-					rows="2"
-					class="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
-				></textarea>
+				<label for="excerpt" class="cms-label">Excerpt</label>
+				<textarea id="excerpt" name="excerpt" rows="2" class="cms-textarea"></textarea>
 			</div>
-			<div class="sm:col-span-2">
-				<label for="content" class="mb-1 block text-sm text-slate-300">Content (HTML)</label>
-				<textarea
-					id="content"
-					name="content"
-					required
-					rows="12"
-					class="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 font-mono text-sm text-white"
-				></textarea>
-			</div>
+			<CmsRichTextEditor required />
 			<div>
-				<label for="status" class="mb-1 block text-sm text-slate-300">Status</label>
-				<select
-					id="status"
-					name="status"
-					class="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
-				>
+				<label for="status" class="cms-label">Status</label>
+				<select id="status" name="status" class="cms-select">
 					<option value="draft">Draft</option>
 					<option value="published">Published</option>
 				</select>
@@ -93,14 +56,9 @@
 		</div>
 
 		{#if form?.error}
-			<p class="text-sm text-red-400">{form.error}</p>
+			<p class="cms-error">{form.error}</p>
 		{/if}
 
-		<button
-			type="submit"
-			class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-500"
-		>
-			Create Post
-		</button>
+		<button type="submit" class="cms-btn-primary">Create Post</button>
 	</form>
 </div>

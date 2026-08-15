@@ -1,32 +1,62 @@
 <script lang="ts">
-	import { cmsPaths } from '$lib/urx-cms';
+	import { onMount } from 'svelte';
+	import { page } from '$app/state';
+	import '$lib/cms-theme.css';
+	import { cmsNavItems, cmsPaths } from '$lib/urx-cms';
+	import { readCmsTheme, writeCmsTheme, type CmsTheme } from '$lib/cms-theme';
+	import CmsThemeToggle from '$lib/components/ui/CmsThemeToggle.svelte';
 
 	let { children, data } = $props();
+
+	let theme = $state<CmsTheme>('dark');
+	const currentPath = $derived(page.url.pathname);
+
+	onMount(() => {
+		theme = readCmsTheme();
+	});
+
+	function setTheme(next: CmsTheme) {
+		theme = next;
+		writeCmsTheme(next);
+	}
 </script>
 
-<div class="min-h-screen bg-slate-950 text-slate-100">
+<div class="cms-shell" data-cms-theme={theme}>
 	{#if data.user}
-		<header class="border-b border-slate-800 bg-slate-900">
-			<div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-				<div class="flex items-center gap-6">
-					<a href={cmsPaths.root} class="font-semibold text-white">Urixoft CMS</a>
-					<nav class="flex gap-4 text-sm text-slate-300">
-						<a href={cmsPaths.root} class="hover:text-white">Dashboard</a>
-						<a href={cmsPaths.posts} class="hover:text-white">Posts</a>
-						<a href={cmsPaths.newPost} class="hover:text-white">New Post</a>
-					</nav>
+		<header class="cms-header">
+			<div class="cms-container">
+				<div class="cms-header-row">
+					<a href={cmsPaths.root} class="cms-brand">Urixoft CMS</a>
+					<div class="cms-header-actions">
+						<CmsThemeToggle {theme} onchange={setTheme} />
+						<span class="cms-muted">{data.user.email}</span>
+						<form method="POST" action={cmsPaths.logout}>
+							<button type="submit" class="cms-btn-ghost">Logout</button>
+						</form>
+					</div>
 				</div>
-				<div class="flex items-center gap-4 text-sm">
-					<span class="text-slate-400">{data.user.email}</span>
-					<form method="POST" action={cmsPaths.logout}>
-						<button type="submit" class="text-slate-300 hover:text-white">Logout</button>
-					</form>
-				</div>
+
+				<nav class="cms-nav cms-nav-row" aria-label="CMS">
+					{#each cmsNavItems as item (item.href)}
+						{@const active = item.match(currentPath)}
+						<a
+							href={item.href}
+							class="cms-nav-link {active ? 'cms-nav-link--active' : ''}"
+							aria-current={active ? 'page' : undefined}
+						>
+							{item.label}
+						</a>
+					{/each}
+				</nav>
 			</div>
 		</header>
+	{:else}
+		<div class="cms-container cms-login-toolbar">
+			<CmsThemeToggle {theme} onchange={setTheme} />
+		</div>
 	{/if}
 
-	<main class="mx-auto max-w-6xl px-6 py-8">
+	<main class="cms-main cms-container">
 		{@render children()}
 	</main>
 </div>

@@ -113,5 +113,6 @@ export async function install(projectRoot = process.cwd()): Promise<void> {
 	console.log('   Admin email:    superadmin@urixoft.com');
 	console.log('   Admin password: passWord1234!');
 	console.log(`   Manifest:       ${MANIFEST_FILE}\n`);
-	console.log('   Next: restart your dev server and visit /blog\n');
+	console.log('   Rich text:      TipTap editor on post create/edit (requires @tiptap/* peer deps)\n');
+	console.log('   Next: restart your dev server and visit /cms\n');
 }

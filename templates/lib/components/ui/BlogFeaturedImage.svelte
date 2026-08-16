@@ -2,7 +2,7 @@
 	import {
 		DEFAULT_BLOG_IMAGE_PLACEHOLDER,
 		isBlogImagePlaceholder
-	} from '@urixoft/urx-cms-package';
+	} from '@urixoft/urx-cms-package/blog-image';
 	import { urxCmsConfig } from '$lib/urx-cms';
 
 	type Props = {

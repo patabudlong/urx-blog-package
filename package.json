@@ -30,6 +30,10 @@
 		"./audit": {
 			"types": "./dist/audit/labels.d.ts",
 			"import": "./dist/audit/labels.js"
+		},
+		"./blog-image": {
+			"types": "./dist/adapters/blog-image.d.ts",
+			"import": "./dist/adapters/blog-image.js"
 		}
 	},
 	"files": [

@@ -24,6 +24,8 @@
 	--cms-badge-published-fg: #6ee7b7;
 	--cms-badge-draft-bg: #78350f;
 	--cms-badge-draft-fg: #fcd34d;
+	--cms-badge-danger-bg: #7f1d1d;
+	--cms-badge-danger-fg: #fca5a5;
 	--cms-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.35);
 	color: var(--cms-fg);
 	background: var(--cms-bg);
@@ -56,6 +58,8 @@
 	--cms-badge-published-fg: #047857;
 	--cms-badge-draft-bg: #fef3c7;
 	--cms-badge-draft-fg: #b45309;
+	--cms-badge-danger-bg: #fee2e2;
+	--cms-badge-danger-fg: #b91c1c;
 	--cms-shadow: 0 20px 25px -5px rgb(15 23 42 / 0.08);
 }
 
@@ -267,6 +271,121 @@
 	background: var(--cms-primary-hover);
 }
 
+.cms-btn-primary--disabled {
+	opacity: 0.55;
+	cursor: not-allowed;
+	pointer-events: none;
+}
+
+.cms-stat-limit {
+	font-size: 1.125rem;
+	font-weight: 500;
+	color: var(--cms-muted);
+}
+
+.cms-chip-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+
+.cms-chip {
+	border: 1px solid var(--cms-border);
+	border-radius: 9999px;
+	padding: 0.25rem 0.75rem;
+	font-size: 0.75rem;
+	font-weight: 500;
+	color: var(--cms-muted);
+	transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.cms-chip:hover {
+	color: var(--cms-fg);
+	border-color: var(--cms-border-subtle);
+}
+
+.cms-chip--active {
+	border-color: var(--cms-primary);
+	background: color-mix(in srgb, var(--cms-primary) 12%, transparent);
+	color: var(--cms-fg);
+}
+
+.cms-table-actions {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 0.25rem;
+}
+
+.cms-table-action {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2rem;
+	height: 2rem;
+	border: none;
+	border-radius: 0.375rem;
+	background: none;
+	color: var(--cms-muted);
+	cursor: pointer;
+	padding: 0;
+	text-decoration: none;
+	transition: color 0.15s ease, background 0.15s ease;
+}
+
+.cms-table-action:hover:not(:disabled) {
+	color: var(--cms-fg);
+	background: color-mix(in srgb, var(--cms-border) 55%, transparent);
+}
+
+.cms-table-action--danger:hover:not(:disabled) {
+	color: var(--cms-danger);
+	background: color-mix(in srgb, var(--cms-danger) 12%, transparent);
+}
+
+.cms-table-action:disabled {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+
+.cms-table-action svg {
+	width: 1.125rem;
+	height: 1.125rem;
+}
+
+.cms-table-action__tooltip {
+	position: absolute;
+	bottom: calc(100% + 0.375rem);
+	left: 50%;
+	z-index: 20;
+	border-radius: 0.375rem;
+	background: var(--cms-surface);
+	border: 1px solid var(--cms-border);
+	padding: 0.25rem 0.5rem;
+	font-size: 0.75rem;
+	font-weight: 500;
+	line-height: 1rem;
+	color: var(--cms-fg);
+	white-space: nowrap;
+	box-shadow: var(--cms-shadow);
+	opacity: 0;
+	pointer-events: none;
+	transform: translateX(-50%) scale(0.95);
+	transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.cms-table-action:hover .cms-table-action__tooltip,
+.cms-table-action:focus-visible .cms-table-action__tooltip {
+	opacity: 1;
+	transform: translateX(-50%) scale(1);
+}
+
+.cms-btn-text:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
 .cms-card {
 	border: 1px solid var(--cms-border);
 	border-radius: 0.75rem;
@@ -346,12 +465,131 @@
 	padding: 0.75rem 1rem;
 }
 
+.cms-table-thumb-col {
+	width: 5rem;
+}
+
+.cms-table-thumb-cell {
+	width: 5rem;
+	padding-right: 0.5rem;
+	vertical-align: middle;
+}
+
+.cms-table-thumb {
+	display: block;
+	width: 3.5rem;
+	height: 2.5rem;
+	border: 1px solid var(--cms-border);
+	border-radius: 0.375rem;
+	object-fit: cover;
+	background: var(--cms-surface-raised);
+}
+
+.cms-table-thumb--placeholder {
+	object-fit: contain;
+	padding: 0.25rem;
+	opacity: 0.85;
+}
+
+.cms-table-toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+}
+
+.cms-table-search {
+	position: relative;
+	flex: 1;
+	min-width: 14rem;
+	max-width: 28rem;
+}
+
+.cms-table-search__icon {
+	position: absolute;
+	top: 50%;
+	left: 0.75rem;
+	width: 1rem;
+	height: 1rem;
+	color: var(--cms-muted);
+	pointer-events: none;
+	transform: translateY(-50%);
+}
+
+.cms-table-search__input {
+	padding-left: 2.25rem;
+}
+
+.cms-table-empty {
+	border-top: 1px solid var(--cms-border);
+	padding: 1.5rem 1rem;
+	text-align: center;
+	font-size: 0.875rem;
+	color: var(--cms-muted);
+}
+
 .cms-table tbody {
 	background: var(--cms-surface-raised);
 }
 
 .cms-table tbody tr + tr {
 	border-top: 1px solid var(--cms-border);
+}
+
+.cms-table--skeleton tbody tr + tr {
+	border-top: 1px solid color-mix(in srgb, var(--cms-border) 55%, transparent);
+}
+
+.cms-skeleton {
+	border-radius: 0.375rem;
+	background: linear-gradient(
+		90deg,
+		var(--cms-surface-raised) 25%,
+		color-mix(in srgb, var(--cms-border) 70%, var(--cms-surface-raised)) 50%,
+		var(--cms-surface-raised) 75%
+	);
+	background-size: 200% 100%;
+	animation: cms-image-shimmer 1.2s ease-in-out infinite;
+}
+
+.cms-skeleton--thumb {
+	width: 3rem;
+	height: 3rem;
+	border-radius: 0.5rem;
+}
+
+.cms-skeleton--line {
+	height: 0.875rem;
+}
+
+.cms-skeleton--line-sm {
+	width: 4rem;
+}
+
+.cms-skeleton--line-md {
+	width: 6rem;
+}
+
+.cms-skeleton--line-lg {
+	width: min(100%, 12rem);
+}
+
+.cms-skeleton--badge {
+	width: 4.5rem;
+	height: 1.375rem;
+	border-radius: 9999px;
+}
+
+.cms-skeleton--actions {
+	width: 5.5rem;
+	height: 1.75rem;
+}
+
+.cms-skeleton--search {
+	width: min(100%, 20rem);
+	height: 2.5rem;
+	border-radius: 0.5rem;
 }
 
 .cms-badge {
@@ -369,6 +607,22 @@
 .cms-badge--draft {
 	background: var(--cms-badge-draft-bg);
 	color: var(--cms-badge-draft-fg);
+}
+
+.cms-badge--danger {
+	background: var(--cms-badge-danger-bg);
+	color: var(--cms-badge-danger-fg);
+}
+
+.cms-activity-filters {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	margin-top: 1.5rem;
+}
+
+.cms-activity-table__when {
+	white-space: nowrap;
 }
 
 .cms-error {
@@ -424,6 +678,7 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
+	gap: 0.5rem;
 	border: 1px solid var(--cms-border);
 	border-radius: 0.5rem;
 	padding: 0.5rem 1rem;
@@ -434,6 +689,11 @@
 
 .cms-btn-outline:hover {
 	border-color: var(--cms-border-subtle);
+}
+
+.cms-btn-outline:disabled {
+	opacity: 0.55;
+	cursor: not-allowed;
 }
 
 .cms-btn-danger {

@@ -1,4 +1,6 @@
 import { execute, query, queryOne } from '../db/connection.js';
+import { recordAuditEvent } from '../audit/repository.js';
+import type { AuditActor } from '../types.js';
 
 function slugify(value: string): string {
 	return value
@@ -81,7 +83,7 @@ export async function countPostsByCategory(name: string): Promise<number> {
 	return Number(row?.count ?? 0);
 }
 
-export async function createCategory(name: string): Promise<BlogCategory> {
+export async function createCategory(name: string, auditActor?: AuditActor): Promise<BlogCategory> {
 	const trimmed = name.trim();
 	if (!trimmed) {
 		throw new Error('Category name is required.');
@@ -105,10 +107,28 @@ export async function createCategory(name: string): Promise<BlogCategory> {
 		{ name: trimmed, slug }
 	);
 
-	return { id, name: trimmed, slug };
+	const category = { id, name: trimmed, slug };
+
+	if (auditActor) {
+		await recordAuditEvent({
+			userId: auditActor.id,
+			userEmail: auditActor.email,
+			action: 'category.created',
+			entityType: 'category',
+			entityId: id,
+			summary: `Created category "${trimmed}"`,
+			metadata: { slug }
+		});
+	}
+
+	return category;
 }
 
-export async function updateCategory(id: number, name: string): Promise<BlogCategory> {
+export async function updateCategory(
+	id: number,
+	name: string,
+	auditActor?: AuditActor
+): Promise<BlogCategory> {
 	const existing = await getCategoryById(id);
 	if (!existing) {
 		throw new Error('Category not found.');
@@ -147,10 +167,24 @@ export async function updateCategory(id: number, name: string): Promise<BlogCate
 		);
 	}
 
-	return { id, name: trimmed, slug };
+	const category = { id, name: trimmed, slug };
+
+	if (auditActor) {
+		await recordAuditEvent({
+			userId: auditActor.id,
+			userEmail: auditActor.email,
+			action: 'category.updated',
+			entityType: 'category',
+			entityId: id,
+			summary: `Updated category "${trimmed}"`,
+			metadata: { previousName: existing.name, slug }
+		});
+	}
+
+	return category;
 }
 
-export async function deleteCategory(id: number): Promise<void> {
+export async function deleteCategory(id: number, auditActor?: AuditActor): Promise<void> {
 	const existing = await getCategoryById(id);
 	if (!existing) {
 		throw new Error('Category not found.');
@@ -162,6 +196,18 @@ export async function deleteCategory(id: number): Promise<void> {
 	}
 
 	await execute('DELETE FROM urx_blog_categories WHERE id = :id', { id });
+
+	if (auditActor) {
+		await recordAuditEvent({
+			userId: auditActor.id,
+			userEmail: auditActor.email,
+			action: 'category.deleted',
+			entityType: 'category',
+			entityId: id,
+			summary: `Deleted category "${existing.name}"`,
+			metadata: { slug: existing.slug }
+		});
+	}
 }
 
 export async function seedDefaultCategories(): Promise<void> {

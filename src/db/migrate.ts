@@ -121,8 +121,8 @@ async function seedSamplePosts(adminId: number): Promise<void> {
 	for (const post of samplePosts) {
 		await execute(
 			`INSERT INTO urx_blog_posts
-			 (slug, title, excerpt, content, category, featured_image, status, published_at, author_id)
-			 VALUES (:slug, :title, :excerpt, :content, :category, :featuredImage, 'published', :publishedAt, :authorId)`,
+			 (slug, title, excerpt, content, category, kind, featured_image, status, published_at, author_id)
+			 VALUES (:slug, :title, :excerpt, :content, :category, 'news', :featuredImage, 'published', :publishedAt, :authorId)`,
 			{
 				slug: post.slug,
 				title: post.title,

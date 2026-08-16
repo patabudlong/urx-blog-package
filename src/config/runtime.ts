@@ -1,4 +1,10 @@
 import { getBlogNavLabel, normalizeBlogNavLabel, getBlogBasePath, type BlogNavLabel, type BlogIndexPath } from '../adapters/blog-nav.js';
+import {
+	DEFAULT_NEWS_LIMIT,
+	DEFAULT_SERVICES_LIMIT,
+	parsePostLimit,
+	type CmsPostKind
+} from '../types.js';
 
 let sessionSecret: string | undefined;
 let databasePath: string | undefined;
@@ -10,6 +16,8 @@ let linodeRegion: string | undefined;
 let linodePublicBase: string | undefined;
 let linodeUploadPrefix: string | undefined;
 let blogNavLabel: BlogNavLabel | undefined;
+let newsLimit: number | undefined;
+let servicesLimit: number | undefined;
 
 export type UrxCmsRuntimeConfig = {
 	sessionSecret?: string;
@@ -22,6 +30,8 @@ export type UrxCmsRuntimeConfig = {
 	linodePublicBase?: string;
 	linodeUploadPrefix?: string;
 	navLabel?: string;
+	newsLimit?: string | number;
+	servicesLimit?: string | number;
 };
 
 export function configureUrxCms(config: UrxCmsRuntimeConfig): void {
@@ -35,6 +45,10 @@ export function configureUrxCms(config: UrxCmsRuntimeConfig): void {
 	if (config.linodePublicBase) linodePublicBase = config.linodePublicBase;
 	if (config.linodeUploadPrefix) linodeUploadPrefix = config.linodeUploadPrefix;
 	if (config.navLabel) blogNavLabel = normalizeBlogNavLabel(config.navLabel);
+	if (config.newsLimit !== undefined) newsLimit = parsePostLimit(config.newsLimit, DEFAULT_NEWS_LIMIT);
+	if (config.servicesLimit !== undefined) {
+		servicesLimit = parsePostLimit(config.servicesLimit, DEFAULT_SERVICES_LIMIT);
+	}
 }
 
 export function getConfiguredBlogNavLabel(): BlogNavLabel {
@@ -56,6 +70,17 @@ export function getConfiguredSessionSecret(): string | undefined {
 
 export function getConfiguredDatabasePath(): string | undefined {
 	return databasePath ?? process.env.URX_CMS_DB_PATH;
+}
+
+export function getConfiguredPostLimits(): { news: number; service: number } {
+	return {
+		news: newsLimit ?? parsePostLimit(process.env.URX_CMS_NEWS_LIMIT, DEFAULT_NEWS_LIMIT),
+		service: servicesLimit ?? parsePostLimit(process.env.URX_CMS_SERVICES_LIMIT, DEFAULT_SERVICES_LIMIT)
+	};
+}
+
+export function getPostKindLabel(kind: CmsPostKind): string {
+	return kind === 'service' ? 'Service' : getConfiguredBlogNavLabel();
 }
 
 export function getLinodeStorageConfig():

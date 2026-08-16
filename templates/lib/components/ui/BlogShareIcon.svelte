@@ -8,7 +8,7 @@
 
 	let { platform, class: className = '' }: Props = $props();
 
-	const iconClass = `blog-share-icon ${className}`.trim();
+	const iconClass = $derived(`blog-share-icon ${className}`.trim());
 </script>
 
 {#if platform === 'copy'}

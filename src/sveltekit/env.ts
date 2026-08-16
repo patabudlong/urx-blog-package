@@ -12,6 +12,8 @@ type BlogEnv = {
 	LINODE_PUBLIC_BASE?: string;
 	LINODE_UPLOAD_PREFIX?: string;
 	URX_CMS_NAV_LABEL?: string;
+	URX_CMS_NEWS_LIMIT?: string;
+	URX_CMS_SERVICES_LIMIT?: string;
 };
 
 export function createCmsEnvHandle(getEnv: () => BlogEnv): Handle {
@@ -27,7 +29,9 @@ export function createCmsEnvHandle(getEnv: () => BlogEnv): Handle {
 			linodeRegion: env.LINODE_REGION,
 			linodePublicBase: env.LINODE_PUBLIC_BASE,
 			linodeUploadPrefix: env.LINODE_UPLOAD_PREFIX,
-			navLabel: env.URX_CMS_NAV_LABEL
+			navLabel: env.URX_CMS_NAV_LABEL,
+			newsLimit: env.URX_CMS_NEWS_LIMIT,
+			servicesLimit: env.URX_CMS_SERVICES_LIMIT
 		});
 		return resolve(event);
 	};

@@ -18,9 +18,23 @@ export function getDb(config: UrxCmsConfig = {}, projectRoot = process.cwd()): D
 		db = new DatabaseSync(path);
 		db.exec('PRAGMA journal_mode = WAL');
 		db.exec('PRAGMA foreign_keys = ON');
+		ensurePostKindColumn(db);
 	}
 
 	return db;
+}
+
+function ensurePostKindColumn(database: DatabaseSync): void {
+	const columns = database.prepare('PRAGMA table_info(urx_blog_posts)').all() as { name: string }[];
+	if (columns.length === 0) return;
+
+	if (!columns.some((column) => column.name === 'kind')) {
+		database.exec(`ALTER TABLE urx_blog_posts ADD COLUMN kind TEXT NOT NULL DEFAULT 'news'`);
+	}
+
+	database.exec(
+		'CREATE INDEX IF NOT EXISTS idx_urx_blog_posts_kind ON urx_blog_posts (kind)'
+	);
 }
 
 export async function query<T>(

@@ -3,6 +3,7 @@ import {
 	createSessionToken,
 	getSessionCookieName,
 	getSessionMaxAge,
+	recordAuditEvent,
 	verifyUser
 } from '@urixoft/urx-cms-package';
 import { cmsPaths } from '$lib/urx-cms';
@@ -22,6 +23,13 @@ export const actions: Actions = {
 
 		const user = await verifyUser(email, password);
 		if (!user) {
+			await recordAuditEvent({
+				userEmail: email,
+				action: 'auth.login_failed',
+				entityType: 'auth',
+				summary: `Failed sign-in attempt for ${email}`,
+				metadata: { email }
+			});
 			return fail(401, { error: 'Invalid email or password.' });
 		}
 
@@ -31,6 +39,14 @@ export const actions: Actions = {
 			sameSite: 'lax',
 			secure: process.env.NODE_ENV === 'production',
 			maxAge: getSessionMaxAge()
+		});
+
+		await recordAuditEvent({
+			userId: user.id,
+			userEmail: user.email,
+			action: 'auth.login',
+			entityType: 'auth',
+			summary: `${user.email} signed in`
 		});
 
 		redirect(303, cmsPaths.root);

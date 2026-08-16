@@ -22,6 +22,8 @@ pnpm cms:migrate
 
 Set `LINODE_*` variables in `.env` to enable featured image uploads in `/cms`. See the package README for full details.
 
+Set `URX_CMS_NEWS_LIMIT` (default 20) and `URX_CMS_SERVICES_LIMIT` (default 10) to match the client plan. These cap how many news/blog and service pages can be created.
+
 ## Default admin
 
 - **URL:** `/cms`

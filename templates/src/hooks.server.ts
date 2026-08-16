@@ -12,5 +12,7 @@ export const handle = createCmsEnvHandle(() => ({
 	LINODE_REGION: env.LINODE_REGION,
 	LINODE_PUBLIC_BASE: env.LINODE_PUBLIC_BASE,
 	LINODE_UPLOAD_PREFIX: env.LINODE_UPLOAD_PREFIX ?? urxCmsConfig.uploadPrefix,
-	URX_CMS_NAV_LABEL: env.URX_CMS_NAV_LABEL ?? urxCmsConfig.navLabel
+	URX_CMS_NAV_LABEL: env.URX_CMS_NAV_LABEL ?? urxCmsConfig.navLabel,
+	URX_CMS_NEWS_LIMIT: env.URX_CMS_NEWS_LIMIT,
+	URX_CMS_SERVICES_LIMIT: env.URX_CMS_SERVICES_LIMIT
 }));

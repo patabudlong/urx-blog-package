@@ -46,7 +46,11 @@ export const handle = createCmsEnvHandle(() => ({
   LINODE_ACCESS_KEY: env.LINODE_ACCESS_KEY,
   LINODE_SECRET_KEY: env.LINODE_SECRET_KEY,
   LINODE_REGION: env.LINODE_REGION,
-  LINODE_PUBLIC_BASE: env.LINODE_PUBLIC_BASE
+  LINODE_PUBLIC_BASE: env.LINODE_PUBLIC_BASE,
+  LINODE_UPLOAD_PREFIX: env.LINODE_UPLOAD_PREFIX,
+  URX_CMS_NAV_LABEL: env.URX_CMS_NAV_LABEL,
+  URX_CMS_NEWS_LIMIT: env.URX_CMS_NEWS_LIMIT,
+  URX_CMS_SERVICES_LIMIT: env.URX_CMS_SERVICES_LIMIT
 }));
 ```
 
@@ -158,6 +162,10 @@ import { injectBlogGridIntoSections } from '@urixoft/urx-cms-package/sveltekit';
 URX_CMS_DB_PATH=data/urixoft-local.db
 URX_CMS_SESSION_SECRET=<random-hex>
 
+# Package page limits (set per client plan)
+URX_CMS_NEWS_LIMIT=20
+URX_CMS_SERVICES_LIMIT=10
+
 # Optional — enables featured image uploads in admin
 LINODE_ENDPOINT=https://sg-sin-1.linodeobjects.com
 LINODE_BUCKET=your-bucket
@@ -167,6 +175,17 @@ LINODE_REGION=sg-sin-1
 LINODE_PUBLIC_BASE=https://your-bucket.sg-sin-1.linodeobjects.com
 LINODE_UPLOAD_PREFIX=urx-cms
 ```
+
+## Package page limits
+
+Each client plan is configured in `.env`. News/blog and service pages are counted separately (drafts and published both count):
+
+| Variable | Default | Applies to |
+|----------|---------|------------|
+| `URX_CMS_NEWS_LIMIT` | `20` | News/blog posts |
+| `URX_CMS_SERVICES_LIMIT` | `10` | Service pages |
+
+The CMS blocks create and duplicate when a type is at its limit. Change the numbers to match the package sold to that client.
 
 ## Default admin
 

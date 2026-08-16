@@ -6,7 +6,9 @@ export {
 	getLinodeStorageConfig,
 	getLinodeUploadPrefix,
 	getConfiguredBlogNavLabel,
-	getConfiguredBlogBasePath
+	getConfiguredBlogBasePath,
+	getConfiguredPostLimits,
+	getPostKindLabel
 } from './config/runtime.js';
 export { getDatabasePath, pingDatabase, closeDb } from './db/connection.js';
 export { migrate, seed, setupDatabase } from './db/migrate.js';
@@ -22,13 +24,27 @@ export {
 export {
 	listPublishedPosts,
 	listAllPosts,
+	listAllPostsWithAuthors,
 	getPostBySlug,
 	getPostById,
+	countPostsByKind,
+	getPostQuotaSnapshot,
 	createPost,
 	updatePost,
+	duplicatePost,
 	deletePost,
-	slugify
+	slugify,
+	uniqueSlug
 } from './posts/repository.js';
+export type { DuplicatePostOptions } from './posts/repository.js';
+export {
+	recordAuditEvent,
+	listAuditEvents,
+	pruneAuditLog,
+	toAuditActor,
+	formatAuditAction
+} from './audit/repository.js';
+export type { RecordAuditEventInput } from './audit/repository.js';
 export const listCategories = categoryRepository.listCategories;
 export const getCategoryById = categoryRepository.getCategoryById;
 export const countPostsByCategory = categoryRepository.countPostsByCategory;
@@ -74,6 +90,14 @@ export {
 } from './adapters/blog-nav.js';
 export type { BlogNavLabel, BlogNavLink, BlogIndexPath } from './adapters/blog-nav.js';
 export { createBlogLoaders, injectBlogGridIntoSections } from './sveltekit/loaders.js';
-export { DEFAULT_ADMIN_EMAIL, DEFAULT_ADMIN_PASSWORD } from './types.js';
+export {
+	DEFAULT_ADMIN_EMAIL,
+	DEFAULT_ADMIN_PASSWORD,
+	isUrxServicesPackageInstalled,
+	URX_SERVICES_MANIFEST_FILE,
+	URX_SERVICES_PACKAGE_NAME,
+	AUDIT_ACTIONS,
+	AUDIT_ENTITY_TYPES
+} from './types.js';
 export { uploadBlogImage, resolveFeaturedImageFromForm, resolveManagedImageKey, fetchManagedBlogImage } from './storage/linode.js';
 export type { BlogImageUpload } from './storage/linode.js';

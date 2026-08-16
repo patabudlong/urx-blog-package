@@ -59,7 +59,9 @@ export async function install(projectRoot = process.cwd()): Promise<void> {
 		LINODE_REGION: 'sg-sin-1',
 		LINODE_PUBLIC_BASE: 'https://your-bucket.sg-sin-1.linodeobjects.com',
 		LINODE_UPLOAD_PREFIX: 'urx-cms',
-		URX_CMS_NAV_LABEL: 'Blog'
+		URX_CMS_NAV_LABEL: 'Blog',
+		URX_CMS_NEWS_LIMIT: '20',
+		URX_CMS_SERVICES_LIMIT: '10'
 	});
 	await loadEnvFile(projectRoot);
 

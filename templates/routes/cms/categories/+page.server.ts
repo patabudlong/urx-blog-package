@@ -4,6 +4,7 @@ import {
 	deleteCategory,
 	getSessionFromCookies,
 	listCategories,
+	toAuditActor,
 	updateCategory
 } from '@urixoft/urx-cms-package';
 import type { Actions, PageServerLoad } from './$types';
@@ -14,7 +15,8 @@ export const load: PageServerLoad = async () => ({
 
 export const actions: Actions = {
 	create: async ({ request, cookies }) => {
-		if (!getSessionFromCookies(cookies)) {
+		const user = getSessionFromCookies(cookies);
+		if (!user) {
 			return fail(401, { error: 'Unauthorized.' });
 		}
 
@@ -26,7 +28,7 @@ export const actions: Actions = {
 		}
 
 		try {
-			await createCategory(name);
+			await createCategory(name, toAuditActor(user));
 			return {
 				success: true,
 				label: 'Category created',
@@ -40,7 +42,8 @@ export const actions: Actions = {
 	},
 
 	update: async ({ request, cookies }) => {
-		if (!getSessionFromCookies(cookies)) {
+		const user = getSessionFromCookies(cookies);
+		if (!user) {
 			return fail(401, { error: 'Unauthorized.' });
 		}
 
@@ -57,7 +60,7 @@ export const actions: Actions = {
 		}
 
 		try {
-			await updateCategory(id, name);
+			await updateCategory(id, name, toAuditActor(user));
 			return {
 				success: true,
 				label: 'Category updated',
@@ -71,7 +74,8 @@ export const actions: Actions = {
 	},
 
 	delete: async ({ request, cookies }) => {
-		if (!getSessionFromCookies(cookies)) {
+		const user = getSessionFromCookies(cookies);
+		if (!user) {
 			return fail(401, { error: 'Unauthorized.' });
 		}
 
@@ -83,7 +87,7 @@ export const actions: Actions = {
 		}
 
 		try {
-			await deleteCategory(id);
+			await deleteCategory(id, toAuditActor(user));
 			return {
 				success: true,
 				label: 'Category deleted',

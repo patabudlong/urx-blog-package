@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import type { BlogCategory } from '@urixoft/urx-cms-package';
+	import type { BlogCategory, CmsPostKind } from '@urixoft/urx-cms-package';
 	import { cmsAlert } from '$lib/cms-alert';
+	import { cmsPaths } from '$lib/urx-cms';
 	import CmsCategoryField from '$lib/components/ui/CmsCategoryField.svelte';
 	import CmsFeaturedImageField from '$lib/components/ui/CmsFeaturedImageField.svelte';
 	import CmsFieldLabel from '$lib/components/ui/CmsFieldLabel.svelte';
@@ -13,14 +14,22 @@
 	const post = $derived(data.post);
 	let categories = $state<BlogCategory[]>([]);
 	let category = $state('');
+	let kind = $state<CmsPostKind>('news');
 	let saving = $state(false);
+	let duplicating = $state(false);
 	let showDeleteModal = $state(false);
 	let deleting = $state(false);
 	let deleteForm = $state<HTMLFormElement | null>(null);
+	let duplicateForm = $state<HTMLFormElement | null>(null);
+
+	const selectedQuota = $derived(data.quota[kind]);
+	const kindChangeBlocked = $derived(kind !== post.kind && selectedQuota.atLimit);
+	const atKindLimit = $derived(data.quota[post.kind].atLimit);
 
 	$effect(() => {
 		categories = data.categories;
 		category = post.category;
+		kind = post.kind;
 	});
 
 	$effect(() => {
@@ -54,9 +63,27 @@
 <div>
 	<div class="flex items-start justify-between gap-4">
 		<h1 class="cms-heading">Edit Post</h1>
-		<button type="button" class="cms-btn-danger shrink-0" onclick={openDeleteModal}>
-			Delete Post
-		</button>
+		<div class="flex shrink-0 items-center gap-3">
+			<button
+				type="button"
+				class="cms-btn-outline"
+				disabled={atKindLimit || duplicating}
+				title={atKindLimit
+					? `Plan limit reached for ${data.quota[post.kind].label} pages`
+					: 'Duplicate this post'}
+				onclick={() => duplicateForm?.requestSubmit()}
+			>
+				{#if duplicating}
+					<CmsSpinner />
+					Duplicating...
+				{:else}
+					Duplicate
+				{/if}
+			</button>
+			<button type="button" class="cms-btn-danger" onclick={openDeleteModal}>
+				Delete Post
+			</button>
+		</div>
 	</div>
 
 	<form
@@ -77,6 +104,24 @@
 			<div class="sm:col-span-2">
 				<CmsFieldLabel for="title" required>Title</CmsFieldLabel>
 				<input id="title" name="title" required value={post.title} class="cms-input" />
+			</div>
+			<div>
+				<CmsFieldLabel
+					for="kind"
+					required
+					tooltip="News/blog and service pages have separate limits based on your plan."
+				>
+					Type
+				</CmsFieldLabel>
+				<select id="kind" name="kind" required class="cms-select" bind:value={kind}>
+					<option value="news">{data.quota.news.label}</option>
+					<option value="service">{data.quota.service.label}</option>
+				</select>
+				{#if kindChangeBlocked}
+					<p class="cms-error mt-2">
+						Your plan allows up to {selectedQuota.limit} {selectedQuota.label} pages.
+					</p>
+				{/if}
 			</div>
 			<div>
 				<CmsFieldLabel
@@ -107,7 +152,7 @@
 		</div>
 
 		<div class="flex gap-3">
-			<button type="submit" class="cms-btn-primary" disabled={saving}>
+			<button type="submit" class="cms-btn-primary" disabled={saving || kindChangeBlocked}>
 				{#if saving}
 					<CmsSpinner />
 					Saving...
@@ -115,12 +160,37 @@
 					Save Changes
 				{/if}
 			</button>
-			{#if post.status === 'published'}
+			<a href={cmsPaths.posts} class="cms-btn-outline">Discard</a>
+			{#if post.status === 'published' && post.kind === 'news'}
 				<a href="{data.blogBasePath}/{post.slug}" class="cms-btn-outline">View Live</a>
 			{/if}
 		</div>
 	</form>
 </div>
+
+<form
+	bind:this={duplicateForm}
+	method="POST"
+	action="?/duplicate"
+	class="sr-only"
+	aria-hidden="true"
+	use:enhance={() => {
+		duplicating = true;
+
+		return async ({ result, update }) => {
+			duplicating = false;
+
+			if (result.type === 'failure') {
+				cmsAlert.error({
+					label: 'Could not duplicate post',
+					subtext: (result.data as { error?: string } | undefined)?.error ?? 'Something went wrong.'
+				});
+			}
+
+			await update();
+		};
+	}}
+></form>
 
 <form
 	bind:this={deleteForm}

@@ -1,18 +1,23 @@
-import { fail, redirect } from '@sveltejs/kit';
+import { fail, isRedirect, redirect } from '@sveltejs/kit';
 import {
 	createPost,
+	getPostQuotaSnapshot,
 	getSessionFromCookies,
 	isBlogStorageConfigured,
 	listCategories,
+	normalizePostKind,
+	PostLimitError,
 	resolveFeaturedImageFromForm,
-	slugify
+	slugify,
+	toAuditActor
 } from '@urixoft/urx-cms-package';
 import { cmsPaths } from '$lib/urx-cms';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => ({
 	storageConfigured: isBlogStorageConfigured(),
-	categories: await listCategories()
+	categories: await listCategories(),
+	quota: await getPostQuotaSnapshot()
 });
 
 export const actions: Actions = {
@@ -25,6 +30,7 @@ export const actions: Actions = {
 		const excerpt = String(form.get('excerpt') ?? '').trim();
 		const content = String(form.get('content') ?? '').trim();
 		const category = String(form.get('category') ?? '').trim();
+		const kind = normalizePostKind(form.get('kind'));
 		const status = String(form.get('status') ?? 'draft') as 'draft' | 'published';
 		const slugInput = String(form.get('slug') ?? '').trim();
 		const slug = slugify(slugInput || title);
@@ -46,17 +52,26 @@ export const actions: Actions = {
 			});
 		}
 
-		const id = await createPost({
-			slug,
-			title,
-			excerpt: excerpt || undefined,
-			content,
-			category,
-			featuredImage,
-			status,
-			authorId: user.id
-		});
+		try {
+			const id = await createPost({
+				slug,
+				title,
+				excerpt: excerpt || undefined,
+				content,
+				category,
+				kind,
+				featuredImage,
+				status,
+				authorId: user.id,
+				auditActor: toAuditActor(user)
+			});
 
-		redirect(303, cmsPaths.editPost(id));
+			redirect(303, cmsPaths.editPost(id));
+		} catch (error) {
+			if (isRedirect(error)) throw error;
+			return fail(error instanceof PostLimitError ? 403 : 400, {
+				error: error instanceof Error ? error.message : 'Could not create post.'
+			});
+		}
 	}
 };

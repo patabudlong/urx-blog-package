@@ -75,3 +75,20 @@ export async function pingDatabase(config: UrxCmsConfig = {}): Promise<boolean> 
 		return false;
 	}
 }
+
+/** True when CMS migrations have been applied (core blog tables exist). */
+export function isCmsDatabaseReady(
+	config: UrxCmsConfig = {},
+	projectRoot = process.cwd()
+): boolean {
+	try {
+		const row = getDb(config, projectRoot)
+			.prepare(
+				"SELECT 1 AS ready FROM sqlite_master WHERE type = 'table' AND name = 'urx_blog_posts' LIMIT 1"
+			)
+			.get();
+		return row !== undefined;
+	} catch {
+		return false;
+	}
+}

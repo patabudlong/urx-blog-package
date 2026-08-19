@@ -1,6 +1,6 @@
 <script lang="ts">
 	import CmsFieldLabel from './CmsFieldLabel.svelte';
-	import { getCmsMediaPreviewUrl } from '$lib/urx-cms';
+	import { getCmsMediaPreviewUrl, isManagedBlogImageUrl } from '$lib/urx-cms';
 
 	type Props = {
 		storageConfigured?: boolean;
@@ -26,7 +26,7 @@
 	const previewSrc = $derived.by(() => {
 		if (!displayUrl) return null;
 		if (displayUrl.startsWith('blob:')) return displayUrl;
-		if (storageConfigured) return getCmsMediaPreviewUrl(displayUrl);
+		if (isManagedBlogImageUrl(displayUrl)) return getCmsMediaPreviewUrl(displayUrl);
 		return displayUrl;
 	});
 

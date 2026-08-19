@@ -1,9 +1,6 @@
 import type { BlogGridData, BlogPost, BlogPostCard } from '../types.js';
 import { getConfiguredBlogBasePath } from '../config/runtime.js';
-import {
-	DEFAULT_BLOG_IMAGE_PLACEHOLDER,
-	resolveBlogImageUrl
-} from './blog-image.js';
+import { DEFAULT_BLOG_IMAGE_PLACEHOLDER, toPublicBlogImageUrl } from './blog-image.js';
 import { getBlogBasePath, rewriteBlogHref, type BlogIndexPath } from './blog-nav.js';
 
 const DEFAULT_FALLBACK_IMAGE = DEFAULT_BLOG_IMAGE_PLACEHOLDER;
@@ -26,7 +23,7 @@ export function toBlogPostCard(
 		category: post.category,
 		date: formatDate(post.publishedAt),
 		title: post.title,
-		image: resolveBlogImageUrl(post.featuredImage, fallbackImage),
+		image: toPublicBlogImageUrl(post.featuredImage, fallbackImage),
 		href: `${basePath}/${post.slug}`,
 		excerpt: post.excerpt ?? undefined
 	};

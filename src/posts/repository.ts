@@ -1,4 +1,4 @@
-import { execute, query, queryOne } from '../db/connection.js';
+import { execute, isCmsDatabaseReady, query, queryOne } from '../db/connection.js';
 import { recordAuditEvent } from '../audit/repository.js';
 import { getConfiguredPostLimits, getPostKindLabel } from '../config/runtime.js';
 import {
@@ -58,6 +58,8 @@ export async function listPublishedPosts(
 	limit?: number,
 	kind: CmsPostKind = 'news'
 ): Promise<BlogPost[]> {
+	if (!isCmsDatabaseReady()) return [];
+
 	const limitClause = limit ? `LIMIT ${Number(limit)}` : '';
 	const rows = await query<PostRow>(
 		`SELECT ${POST_COLUMNS}
@@ -125,6 +127,8 @@ export async function getPostBySlug(
 	slug: string,
 	kind: CmsPostKind = 'news'
 ): Promise<BlogPost | null> {
+	if (!isCmsDatabaseReady()) return null;
+
 	const row = await queryOne<PostRow>(
 		`SELECT ${POST_COLUMNS}
 		 FROM urx_blog_posts

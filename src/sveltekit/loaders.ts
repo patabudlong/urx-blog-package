@@ -1,6 +1,7 @@
 import { toBlogGridData } from '../adapters/blog-grid.js';
 import { applyBlogPathsToGridSection } from './nav.js';
 import { getConfiguredBlogBasePath } from '../config/runtime.js';
+import { isCmsDatabaseReady } from '../db/connection.js';
 import { listPublishedPosts, getPostBySlug } from '../posts/repository.js';
 import type { BlogGridData, BlogPost, UrxCmsConfig } from '../types.js';
 import type { BlogIndexPath } from '../adapters/blog-nav.js';
@@ -40,6 +41,24 @@ export function createBlogLoaders(config: UrxCmsConfig = {}): BlogLoaders {
 	};
 }
 
+type BlogGridSectionInput = {
+	type: 'blog-grid';
+	eyebrow?: string;
+	title?: string;
+	cta?: { label: string; href: string };
+	posts?: { href: string }[];
+};
+
+function applyStaticBlogGridFallback<T extends { type: string }>(
+	sections: T[],
+	basePath: BlogIndexPath
+): T[] {
+	return sections.map((section) => {
+		if (section.type !== 'blog-grid') return section;
+		return applyBlogPathsToGridSection(section as T & BlogGridSectionInput, basePath) as T;
+	});
+}
+
 export async function injectBlogGridIntoSections<T extends { type: string; posts?: unknown }>(
 	sections: T[],
 	options: {
@@ -52,6 +71,10 @@ export async function injectBlogGridIntoSections<T extends { type: string; posts
 	} = {}
 ): Promise<T[]> {
 	const basePath = options.basePath ?? getConfiguredBlogBasePath();
+
+	if (!isCmsDatabaseReady()) {
+		return applyStaticBlogGridFallback(sections, basePath);
+	}
 
 	try {
 		const grid = await toBlogGridData(await listPublishedPosts(options.limit ?? 3), {
@@ -71,12 +94,6 @@ export async function injectBlogGridIntoSections<T extends { type: string; posts
 		});
 	} catch (loadError) {
 		console.warn('[urx-cms-package] Could not load blog posts, using static fallback.', loadError);
-		return sections.map((section) => {
-			if (section.type !== 'blog-grid') return section;
-			return applyBlogPathsToGridSection(
-				section as T & { type: 'blog-grid'; cta?: { label: string; href: string }; posts?: { href: string }[] },
-				basePath
-			) as T;
-		});
+		return applyStaticBlogGridFallback(sections, basePath);
 	}
 }

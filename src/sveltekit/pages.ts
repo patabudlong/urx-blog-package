@@ -4,7 +4,9 @@ import {
 	getConfiguredBlogNavLabel
 } from '../config/runtime.js';
 import { toBlogPostCard } from '../adapters/blog-grid.js';
+import { rewriteManagedBlogImagesInHtml, toPublicBlogImageUrl } from '../adapters/blog-image.js';
 import { buildBlogPostShareContext } from '../adapters/blog-share.js';
+import { isCmsDatabaseReady } from '../db/connection.js';
 import { getPostBySlug, listPublishedPosts } from '../posts/repository.js';
 import type { BlogIndexPath } from '../adapters/blog-nav.js';
 
@@ -27,6 +29,18 @@ export function createBlogIndexLoad(options: { fallbackImage?: string; basePath?
 		const blogNavLabel = getConfiguredBlogNavLabel();
 		const blogBasePath = options.basePath ?? getConfiguredBlogBasePath();
 		const fallbackImage = options.fallbackImage;
+
+		if (!isCmsDatabaseReady()) {
+			return {
+				seo: {
+					title: blogNavLabel,
+					description: 'Latest news and port operations insights.'
+				},
+				blogNavLabel,
+				blogBasePath,
+				posts: []
+			};
+		}
 
 		try {
 			const posts = await listPublishedPosts();
@@ -62,6 +76,8 @@ export function createBlogPostLoad(options: CreateBlogPostLoadOptions = {}) {
 		params: { slug: string };
 		url: URL;
 	}) => {
+		if (!isCmsDatabaseReady()) error(404, 'Post not found');
+
 		const post = await getPostBySlug(params.slug);
 		if (!post) error(404, 'Post not found');
 
@@ -81,7 +97,11 @@ export function createBlogPostLoad(options: CreateBlogPostLoadOptions = {}) {
 			share,
 			blogNavLabel: getConfiguredBlogNavLabel(),
 			blogBasePath,
-			post
+			post: {
+				...post,
+				featuredImage: toPublicBlogImageUrl(post.featuredImage, options.fallbackImage),
+				content: rewriteManagedBlogImagesInHtml(post.content)
+			}
 		};
 	};
 }

@@ -143,6 +143,9 @@ pnpm urx-cms remove
 |-------|---------|
 | `/blog` | Blog index |
 | `/blog/[slug]` | Post detail |
+| `/news` | News index (when `URX_CMS_NAV_LABEL=News`) |
+| `/news/[slug]` | News post detail |
+| `/api/blog-media` | Public proxy for private Linode featured images |
 | `/cms` | Admin dashboard |
 | `/cms/login` | Admin sign-in |
 | `/cms/posts` | Post list |
@@ -174,7 +177,10 @@ LINODE_SECRET_KEY=your-secret-key
 LINODE_REGION=sg-sin-1
 LINODE_PUBLIC_BASE=https://your-bucket.sg-sin-1.linodeobjects.com
 LINODE_UPLOAD_PREFIX=urx-cms
+PUBLIC_MANAGED_IMAGE_BASE=https://your-bucket.sg-sin-1.linodeobjects.com
 ```
+
+Private buckets: public pages load featured images through `/api/blog-media`. Set `PUBLIC_MANAGED_IMAGE_BASE` to the same origin as `LINODE_PUBLIC_BASE`.
 
 ## Package page limits
 

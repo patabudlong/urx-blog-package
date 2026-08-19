@@ -2,9 +2,11 @@
 	import Container from '$lib/components/layout/Container.svelte';
 	import BlogFeaturedImage from '$lib/components/ui/BlogFeaturedImage.svelte';
 	import BlogShareBar from '$lib/components/ui/BlogShareBar.svelte';
+	import { rewriteManagedBlogImagesInHtml } from '$lib/urx-cms';
 
 	let { data } = $props();
 	const post = $derived(data.post);
+	const articleHtml = $derived(rewriteManagedBlogImagesInHtml(post.content ?? ''));
 	const ogImage = $derived(data.seo.image);
 	const ogImageIsSecure = $derived(ogImage?.startsWith('https://'));
 </script>
@@ -68,8 +70,8 @@
 				class="mt-8 w-full rounded-2xl"
 			/>
 
-			<div class="prose prose-neutral mt-8 max-w-none">
-				{@html post.content}
+			<div class="blog-article mt-8">
+				{@html articleHtml}
 			</div>
 
 			<BlogShareBar share={data.share} heading="Share with your network" class="mt-10" />

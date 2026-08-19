@@ -1,4 +1,4 @@
-import { resolveBlogImageUrl, isBlogImagePlaceholder } from './blog-image.js';
+import { isBlogImagePlaceholder, toPublicBlogImageUrl } from './blog-image.js';
 import type { BlogIndexPath } from './blog-nav.js';
 import type { BlogPost } from '../types.js';
 
@@ -116,7 +116,7 @@ export function defaultBlogShareImageUrl(
 	featuredImage: string | null,
 	context: { siteOrigin: string; fallbackImage?: string }
 ): string | undefined {
-	const resolved = resolveBlogImageUrl(featuredImage, context.fallbackImage);
+	const resolved = toPublicBlogImageUrl(featuredImage, context.fallbackImage);
 	if (isBlogImagePlaceholder(resolved, context.fallbackImage)) {
 		return undefined;
 	}

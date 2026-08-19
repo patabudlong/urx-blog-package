@@ -1,6 +1,5 @@
 #!/usr/bin/env node
-import { mkdir } from 'node:fs/promises';
-import { readFile, unlink } from 'node:fs/promises';
+import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { createSessionSecret } from '../auth/session.js';
 import { setupDatabase } from '../index.js';
@@ -17,6 +16,22 @@ import {
 } from './utils.js';
 
 const packageRoot = getPackageRoot();
+
+async function ensureBlogArticleCssImport(projectRoot: string): Promise<void> {
+	const candidates = [
+		{ path: join(projectRoot, 'src/routes/layout.css'), importLine: "@import '../lib/styles/blog-article.css';" },
+		{ path: join(projectRoot, 'src/app.css'), importLine: "@import './lib/styles/blog-article.css';" }
+	];
+
+	for (const candidate of candidates) {
+		if (!(await pathExists(candidate.path))) continue;
+		const content = await readFile(candidate.path, 'utf8');
+		if (content.includes('blog-article.css')) return;
+		await writeFile(candidate.path, `${candidate.importLine}\n${content}`);
+		console.log(`   added ${candidate.importLine} to ${candidate.path.replace(`${projectRoot}/`, '')}`);
+		return;
+	}
+}
 
 async function loadEnvFile(projectRoot: string): Promise<void> {
 	const envPath = join(projectRoot, '.env');
@@ -59,6 +74,7 @@ export async function install(projectRoot = process.cwd()): Promise<void> {
 		LINODE_REGION: 'sg-sin-1',
 		LINODE_PUBLIC_BASE: 'https://your-bucket.sg-sin-1.linodeobjects.com',
 		LINODE_UPLOAD_PREFIX: 'urx-cms',
+		PUBLIC_MANAGED_IMAGE_BASE: 'https://your-bucket.sg-sin-1.linodeobjects.com',
 		URX_CMS_NAV_LABEL: 'Blog',
 		URX_CMS_NEWS_LIMIT: '20',
 		URX_CMS_SERVICES_LIMIT: '10'
@@ -67,13 +83,22 @@ export async function install(projectRoot = process.cwd()): Promise<void> {
 
 	await mkdir(join(projectRoot, 'data'), { recursive: true });
 
+	const skipHostFiles = new Set([
+		join(srcDir, 'hooks.server.ts'),
+		join(srcDir, 'routes', '+page.server.ts'),
+		join(srcDir, 'routes', '+layout.server.ts')
+	]);
+	const skipExisting = (destPath: string) => skipHostFiles.has(destPath);
+
 	const legacyPageLoad = join(srcDir, 'routes', '+page.ts');
 	if (await pathExists(legacyPageLoad)) {
 		await unlink(legacyPageLoad);
 		console.log('   replaced src/routes/+page.ts with +page.server.ts');
 	}
 
-	const routeCopies = await copyDir(join(templatesDir, 'routes'), join(srcDir, 'routes'), []);
+	const routeCopies = await copyDir(join(templatesDir, 'routes'), join(srcDir, 'routes'), [], {
+		skipExisting
+	});
 	copiedFiles.push(...routeCopies);
 
 	const libCopies = await copyDir(join(templatesDir, 'lib'), join(srcDir, 'lib'), []);
@@ -87,9 +112,11 @@ export async function install(projectRoot = process.cwd()): Promise<void> {
 
 	const srcTemplateDir = join(templatesDir, 'src');
 	if (await pathExists(srcTemplateDir)) {
-		const srcCopies = await copyDir(srcTemplateDir, srcDir, []);
+		const srcCopies = await copyDir(srcTemplateDir, srcDir, [], { skipExisting });
 		copiedFiles.push(...srcCopies);
 	}
+
+	await ensureBlogArticleCssImport(projectRoot);
 
 	const legacyBlogPageLoad = join(srcDir, 'routes', '(marketing)', 'blog', '+page.ts');
 	if (await pathExists(legacyBlogPageLoad)) {
@@ -100,7 +127,7 @@ export async function install(projectRoot = process.cwd()): Promise<void> {
 	await setupDatabase();
 
 	const manifest = {
-		version: '0.2.0',
+		version: '0.5.1',
 		installedAt: new Date().toISOString(),
 		packageName: PACKAGE_NAME,
 		files: relPaths(projectRoot, copiedFiles),

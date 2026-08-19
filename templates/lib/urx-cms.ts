@@ -105,3 +105,10 @@ export function resolvePublicBlogImageUrl(
 	}
 	return getPublicBlogImageUrl(resolved);
 }
+
+/** Rewrite Linode image URLs inside post HTML so public pages can load them. */
+export function rewriteManagedBlogImagesInHtml(html: string): string {
+	return html.replace(/\bsrc=(["'])(.*?)\1/gi, (_match, quote: string, src: string) => {
+		return `src=${quote}${resolvePublicBlogImageUrl(src)}${quote}`;
+	});
+}

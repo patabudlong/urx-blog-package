@@ -1,0 +1,82 @@
+@layer components {
+	.blog-article {
+		@apply text-base leading-relaxed text-foreground-muted;
+	}
+
+	.blog-article :where(p, ul, ol, blockquote, pre, table, hr) {
+		@apply mt-5;
+	}
+
+	.blog-article :where(h2, h3, h4) {
+		@apply mt-10 mb-3 font-display font-bold tracking-tight text-foreground;
+	}
+
+	.blog-article h2 {
+		@apply text-2xl;
+	}
+
+	.blog-article h3 {
+		@apply text-xl;
+	}
+
+	.blog-article h4 {
+		@apply text-lg;
+	}
+
+	.blog-article :first-child {
+		@apply mt-0;
+	}
+
+	.blog-article a {
+		@apply font-medium text-brand underline decoration-brand/30 underline-offset-2 hover:decoration-brand;
+	}
+
+	.blog-article strong {
+		@apply font-semibold text-foreground;
+	}
+
+	.blog-article ul {
+		@apply list-disc space-y-2 pl-6;
+	}
+
+	.blog-article ol {
+		@apply list-decimal space-y-2 pl-6;
+	}
+
+	.blog-article li p {
+		@apply mt-0;
+	}
+
+	.blog-article blockquote {
+		@apply border-l-4 border-brand/30 pl-4 italic text-foreground;
+	}
+
+	.blog-article img {
+		@apply my-6 h-auto w-full rounded-2xl object-cover;
+	}
+
+	.blog-article figure {
+		@apply my-6;
+	}
+
+	.blog-article figcaption {
+		@apply mt-2 text-center text-sm text-foreground-muted;
+	}
+
+	.blog-article hr {
+		@apply border-border;
+	}
+
+	.blog-article table {
+		@apply w-full overflow-hidden rounded-xl border border-border text-sm;
+	}
+
+	.blog-article th,
+	.blog-article td {
+		@apply border-b border-border px-3 py-2 text-left;
+	}
+
+	.blog-article th {
+		@apply bg-surface font-semibold text-foreground;
+	}
+}

@@ -19,7 +19,12 @@ export async function pathExists(path: string): Promise<boolean> {
 	}
 }
 
-export async function copyDir(src: string, dest: string, copied: string[] = []): Promise<string[]> {
+export async function copyDir(
+	src: string,
+	dest: string,
+	copied: string[] = [],
+	options: { skipExisting?: (destPath: string) => boolean } = {}
+): Promise<string[]> {
 	await mkdir(dest, { recursive: true });
 	const entries = await readdir(src, { withFileTypes: true });
 
@@ -28,7 +33,9 @@ export async function copyDir(src: string, dest: string, copied: string[] = []):
 		const destPath = join(dest, entry.name);
 
 		if (entry.isDirectory()) {
-			await copyDir(srcPath, destPath, copied);
+			await copyDir(srcPath, destPath, copied, options);
+		} else if (options.skipExisting?.(destPath) && (await pathExists(destPath))) {
+			continue;
 		} else {
 			await copyFile(srcPath, destPath);
 			copied.push(destPath);
@@ -56,16 +63,27 @@ export async function upsertEnvFile(projectRoot: string, entries: Record<string,
 		content = await readFile(envPath, 'utf8');
 	}
 
-	const lines = content.split('\n').filter((line) => {
-		const key = line.split('=')[0]?.trim();
-		return !key || !(key in entries);
-	});
+	const existingKeys = new Set(
+		content
+			.split('\n')
+			.map((line) => line.trim())
+			.filter((line) => line && !line.startsWith('#'))
+			.map((line) => line.split('=')[0]?.trim())
+			.filter((key): key is string => Boolean(key))
+	);
 
+	const additions: string[] = [];
 	for (const [key, value] of Object.entries(entries)) {
-		lines.push(`${key}=${value}`);
+		if (!existingKeys.has(key)) {
+			additions.push(`${key}=${value}`);
+		}
 	}
 
-	await writeFile(envPath, lines.filter((line, index, arr) => line || index < arr.length - 1).join('\n') + '\n');
+	if (additions.length === 0 && content) return;
+
+	const next = content.trimEnd();
+	const body = [next, ...additions].filter(Boolean).join('\n') + '\n';
+	await writeFile(envPath, body);
 }
 
 export async function upsertEnvExample(projectRoot: string, entries: Record<string, string>): Promise<void> {

@@ -223,6 +223,8 @@ export type CreatePostInput = {
 	status: BlogPostStatus;
 	authorId?: number;
 	auditActor?: AuditActor;
+	/** ISO timestamp. Used when provided; otherwise set to now if publishing. */
+	publishedAt?: string | null;
 };
 
 export async function createPost(input: CreatePostInput): Promise<number> {
@@ -233,7 +235,8 @@ export async function createPost(input: CreatePostInput): Promise<number> {
 		throw new Error(`A post with the slug "${input.slug}" already exists.`);
 	}
 
-	const publishedAt = input.status === 'published' ? new Date().toISOString() : null;
+	const publishedAt =
+		input.publishedAt ?? (input.status === 'published' ? new Date().toISOString() : null);
 
 	const id = await execute(
 		`INSERT INTO urx_blog_posts
@@ -286,11 +289,11 @@ export async function updatePost(input: UpdatePostInput): Promise<void> {
 
 	const status = input.status ?? existing.status;
 	let publishedAt = existing.publishedAt?.toISOString() ?? null;
-
+	if (input.publishedAt !== undefined) {
+		publishedAt = input.publishedAt;
+	}
 	if (status === 'published' && !publishedAt) {
 		publishedAt = new Date().toISOString();
-	} else if (status === 'draft') {
-		publishedAt = null;
 	}
 
 	await execute(

@@ -9,6 +9,7 @@ import {
 	PostLimitError,
 	resolveFeaturedImageFromForm,
 	slugify,
+	parsePublishedAtFormValue,
 	toAuditActor
 } from '@urixoft/urx-cms-package';
 import { cmsPaths } from '$lib/urx-cms';
@@ -34,6 +35,14 @@ export const actions: Actions = {
 		const status = String(form.get('status') ?? 'draft') as 'draft' | 'published';
 		const slugInput = String(form.get('slug') ?? '').trim();
 		const slug = slugify(slugInput || title);
+		let publishedAt: string | null;
+		try {
+			publishedAt = parsePublishedAtFormValue(form.get('publishedAt'));
+		} catch (dateError) {
+			return fail(400, {
+				error: dateError instanceof Error ? dateError.message : 'Published date is invalid.'
+			});
+		}
 
 		if (!title || !content) {
 			return fail(400, { error: 'Title and content are required.' });
@@ -62,6 +71,7 @@ export const actions: Actions = {
 				kind,
 				featuredImage,
 				status,
+				publishedAt,
 				authorId: user.id,
 				auditActor: toAuditActor(user)
 			});

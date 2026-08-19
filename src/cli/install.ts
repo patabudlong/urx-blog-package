@@ -127,7 +127,7 @@ export async function install(projectRoot = process.cwd()): Promise<void> {
 	await setupDatabase();
 
 	const manifest = {
-		version: '0.5.1',
+		version: '0.5.2',
 		installedAt: new Date().toISOString(),
 		packageName: PACKAGE_NAME,
 		files: relPaths(projectRoot, copiedFiles),

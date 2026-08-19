@@ -36,6 +36,7 @@ export {
 	slugify,
 	uniqueSlug
 } from './posts/repository.js';
+export { parsePublishedAtFormValue, toDatetimeLocalValue } from './utils/datetime.js';
 export type { DuplicatePostOptions } from './posts/repository.js';
 export {
 	recordAuditEvent,

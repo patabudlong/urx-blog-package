@@ -8,6 +8,8 @@
 	import CmsFieldLabel from '$lib/components/ui/CmsFieldLabel.svelte';
 	import CmsRichTextEditor from '$lib/components/ui/CmsRichTextEditor.svelte';
 	import CmsSpinner from '$lib/components/ui/CmsSpinner.svelte';
+	import CmsTitleSlugFields from '$lib/components/ui/CmsTitleSlugFields.svelte';
+	import { toDatetimeLocalValue } from '$lib/cms-post-form';
 
 	let { data, form } = $props();
 
@@ -101,10 +103,7 @@
 		}}
 	>
 		<div class="grid gap-4 sm:grid-cols-2">
-			<div class="sm:col-span-2">
-				<CmsFieldLabel for="title" required>Title</CmsFieldLabel>
-				<input id="title" name="title" required value={post.title} class="cms-input" />
-			</div>
+			<CmsTitleSlugFields initialTitle={post.title} initialSlug={post.slug} />
 			<div>
 				<CmsFieldLabel
 					for="kind"
@@ -123,15 +122,6 @@
 					</p>
 				{/if}
 			</div>
-			<div>
-				<CmsFieldLabel
-					for="slug"
-					tooltip="If left blank, the slug is generated automatically from the title."
-				>
-					Slug
-				</CmsFieldLabel>
-				<input id="slug" name="slug" value={post.slug} class="cms-input" />
-			</div>
 			<CmsCategoryField bind:categories bind:value={category} />
 			<CmsFeaturedImageField
 				storageConfigured={data.storageConfigured}
@@ -148,6 +138,21 @@
 					<option value="draft" selected={post.status === 'draft'}>Draft</option>
 					<option value="published" selected={post.status === 'published'}>Published</option>
 				</select>
+			</div>
+			<div>
+				<CmsFieldLabel
+					for="publishedAt"
+					tooltip="Shown on the public post. Leave blank to use the current time when you publish."
+				>
+					Published date
+				</CmsFieldLabel>
+				<input
+					id="publishedAt"
+					name="publishedAt"
+					type="datetime-local"
+					class="cms-input"
+					value={toDatetimeLocalValue(post.publishedAt)}
+				/>
 			</div>
 		</div>
 
